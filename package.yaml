@@ -50,5 +50,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - conditional-restriction-parser
-    - hspec == 2.9.7
+    - hspec == 2.8.5
     - QuickCheck == 2.14.2
