@@ -1,0 +1,19 @@
+# Copied from: https://gitlab.ost.ch/FP/Internal/Haskell-Exercises-shmup-2022-FS
+image: haskell:9.0.2
+
+stages:
+  - build
+  - test
+
+stack_build:
+  stage: build
+  script:
+    - stack build
+  artifacts:
+    paths:
+      - .stack-work
+
+stack_test:
+  stage: test
+  script:
+    - stack test

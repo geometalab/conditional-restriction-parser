@@ -1,0 +1,54 @@
+name:                conditional-restriction-parser
+version:             0.1.0.0
+github:              "lbuchli/conditional-restriction-parser"
+license:             AGPLv3
+author:              "Lukas Buchli"
+maintainer:          "lukas.buchli@ost.ch"
+copyright:           "2022 Lukas Buchli"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/lbuchli/conditional-restriction-parser#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+# Application dependencies
+- cmdargs == 0.10.21
+# Library dependencies
+- time >= 1.12.1 && < 1.13
+
+library:
+  source-dirs: src
+
+executables:
+  conditional-restriction-parser-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - conditional-restriction-parser
+
+tests:
+  conditional-restriction-parser-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - conditional-restriction-parser
+    - hspec == 2.9.7
+    - QuickCheck == 2.14.2

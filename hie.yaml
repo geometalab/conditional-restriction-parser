@@ -1,0 +1,13 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "conditional-restriction-parser:lib"
+
+    - path: "./app/Main.hs"
+      component: "conditional-restriction-parser:exe:conditional-restriction-parser-exe"
+
+    - path: "./app/Paths_conditional_restriction_parser.hs"
+      component: "conditional-restriction-parser:exe:conditional-restriction-parser-exe"
+
+    - path: "./test"
+      component: "conditional-restriction-parser:test:conditional-restriction-parser-test"
