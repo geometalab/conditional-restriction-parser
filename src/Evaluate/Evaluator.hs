@@ -1,7 +1,22 @@
 module Evaluate.Evaluator where
 
-import Evaluate.InputData (Type, Value)
-import Parse.AST (Grammar)
+import Evaluate.InputData (Type (..), Value (..), ID)
+import Parse.AST (Condition (..), ConditionalRestriction, Token, ComparisonOp (..), OpeningHours)
+import Parse.Lib (Result(..))
+import Data.Time (UTCTime)
 
-applyData :: Grammar -> (Type, Value) -> Grammar
-applyData = undefined
+type EvalError = Either String [(ID, Type)]
+
+result :: [(ID, Value)] -> ConditionalRestriction -> Result EvalError (Maybe Token)
+result = undefined
+
+fulfills :: [(ID, Value)] -> Condition -> Result EvalError Bool
+fulfills ds (OH _) = undefined
+fulfills ds (Comparison tok op val) = case lookup tok ds of
+  Just (VNum d) -> Ok $ case op of
+    Gt -> d > val
+    Lt -> d < val
+  Nothing -> Err $ Right [(tok, TNum)]
+
+timeIn :: UTCTime -> OpeningHours -> Maybe Bool
+timeIn = undefined
