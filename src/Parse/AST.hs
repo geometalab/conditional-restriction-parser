@@ -22,7 +22,11 @@ newtype OpeningHours = OpeningHours [RuleSequence]
 
 type OHState = Maybe Bool
 
-data RuleSequence = RuleSequence SelectorSequence OHState
+data RuleType = Normal
+              | Additional
+ deriving (Eq, Show)
+
+data RuleSequence = RuleSequence RuleType SelectorSequence OHState
  deriving (Eq, Show)
 
 type WeekdaySelector = [WeekdayRange]

@@ -1,5 +1,4 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-
+{-# LANGUAGE LambdaCase #-}
 module Parse.Lib where
 
 import Control.Applicative (Alternative (many), empty, (<|>))
@@ -52,22 +51,40 @@ str s = Parser $ \i ->
     len = length s
 
 anyOf :: [Char] -> Parser String Char
-anyOf cs = Parser $ \(i : is) ->
-  if i `elem` cs
+anyOf cs = Parser $ \case
+  [] -> Err "Empty input."
+  (i : is) -> if i `elem` cs
     then Ok (i, is)
     else Err $ show i ++ " does not match any of '" ++ cs ++ "'"
 
 noneOf :: [Char] -> Parser String Char
-noneOf cs = Parser $ \(i : is) ->
-  if i `elem` cs
+noneOf cs = Parser $ \case
+  [] -> Err "Empty input."
+  (i : is) -> if i `elem` cs
     then Err $ show i ++ " matches '" ++ cs ++ "'"
     else Ok (i, is)
 
 ws :: Parser String String
 ws = many (anyOf "\t\n ")
 
+word :: String -> Parser String String
+word s = str s <* ws
+
+tok :: Parser String String
+tok = many (noneOf "\t\n ") <* ws
+
+dbl :: Parser String Double
+dbl = Parser $ \i -> case reads i of
+  [(x, rem)] -> Ok (x, rem)
+  _ -> Err $ "No double: " ++ shorten 16 i
+
 shorten :: Int -> String -> String
-shorten len str =
+shorten len str | len > 3 =
   if length str > len
     then take (len - 3) str ++ "..."
     else str
+shorten len str = take len str
+
+strip :: String -> String
+strip = drop_ws . reverse . drop_ws . reverse
+  where drop_ws = dropWhile (`elem` "\t\n ")

@@ -36,5 +36,5 @@ spec = do
     it "gets that 18:00 is within 11:00-20:00" $
       let
         time = read "yyyy-mm-ddThh:mm:ss[.sss]Z"
-        span = OpeningHours [RuleSequence (TimeSel [Span (Time 11 00) (Time 20 00)]) (Just True)]
+        span = OpeningHours [RuleSequence Normal (TimeSel [Span (Time 11 00) (Time 20 00)]) (Just True)]
       in timeIn time span `shouldBe` Just True

@@ -60,7 +60,13 @@ test-suite conditional-restriction-parser-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Arbitrary.Evaluate.InputData
+      Arbitrary.Parse.AST
+      Evaluate.EvaluatorSpec
       IntegrationSpec
+      Parse.LibSpec
+      Parse.OpeningHoursParserSpec
+      Parse.ParserSpec
       Paths_conditional_restriction_parser
   hs-source-dirs:
       test

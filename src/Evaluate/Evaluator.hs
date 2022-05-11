@@ -16,7 +16,16 @@ fulfills ds (Comparison tok op val) = case lookup tok ds of
   Just (VNum d) -> Ok $ case op of
     Gt -> d > val
     Lt -> d < val
+    GtEq -> d >= val
+    LtEq -> d <= val
+    Eq -> d == val -- TODO is it safe to compare doubles directly here?
+  Just _ -> Err . Left $ "Incorrect input type for " ++ tok
   Nothing -> Err $ Right [(tok, TNum)]
+fulfills ds (Absolute tok) = case lookup tok ds of
+  Just (VBool b) -> Ok b
+  Just _ -> Err . Left $ "Incorrect input type for " ++ tok
+  Nothing -> Err $ Right [(tok, TBool)]
+
 
 timeIn :: UTCTime -> OpeningHours -> Maybe Bool
 timeIn = undefined

@@ -1,11 +1,17 @@
 module Lib
-  ( add,
-    sub,
+  ( needsData,
+    evaluate,
   )
 where
 
-add :: Int -> Int -> Int
-add = (+)
+import Parse.Parser (pConditionalRestriction)
+import Evaluate.InputData ( ID, Type, Value)
+import Parse.Lib (Result)
+import Parse.AST (Token)
 
-sub :: Int -> Int -> Int
-sub = (-)
+
+needsData :: String -> Result String [(ID, Type)]
+needsData = undefined
+
+evaluate :: String -> [(ID, Value)] -> Result String (Maybe Token)
+evaluate = undefined
