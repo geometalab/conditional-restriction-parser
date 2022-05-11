@@ -1,6 +1,6 @@
 module Arbitrary.Parse.AST where
 import Test.QuickCheck (Arbitrary (arbitrary), elements, listOf, oneof, Gen)
-import Parse.AST (ConditionalRestriction (ConditionalRestriction), Condition (OpeningHours, Comparison, Absolute), ComparisonOp (..), Expression (Expression), OpeningHours (OH_))
+import Parse.AST (ConditionalRestriction (ConditionalRestriction), Condition (..), ComparisonOp (..), Expression (Expression))
 import Data.Maybe (fromMaybe, maybeToList)
 
 instance Arbitrary ConditionalRestriction where
@@ -11,7 +11,7 @@ instance Arbitrary Expression where
 
 instance Arbitrary Condition where
   arbitrary = oneof
-    [ pure $ OpeningHours OH_
+    [ pure $ OH undefined
     , Comparison <$> elements ["wheight", "length", "width", "height", "wheels"] <*> arbitrary <*> arbitrary
     , Absolute <$> elements ["wet", "snow"]
     ]
