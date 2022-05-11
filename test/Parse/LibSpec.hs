@@ -1,0 +1,77 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+module Parse.LibSpec where
+
+import Test.Hspec ( Spec, describe, Spec, describe, it, shouldBe )
+import Parse.Lib (parse, Result(..), str, anyOf, noneOf, ws, word, tok, shorten, dbl, Parser (Parser), strip)
+import Parse.AST (ComparisonOp(..), Condition(..))
+import Test.QuickCheck (Testable(property))
+import Test.QuickCheck.Function -- cannot import Fn specifically
+import Control.Applicative (Alternative(empty, (<|>)))
+
+spec :: Spec
+spec = do
+  describe "Show (Result e)" $ do
+    describe "show" $ do
+      it "shows Ok 'test' as Ok 'test'" $ show (Ok "test" :: Result String String) `shouldBe` "Ok \"test\""
+  describe "Applicative (Result e)" $ do
+    describe "pure" $ do
+      it "is the same as Ok" $ property $ \(x :: String) -> pure x == (Ok x :: Result String String)
+    describe "(<*>)" $ do
+      it "can apply any function" $ property $ \(Fn (f :: String -> String)) (x :: String) -> (pure f <*> pure x) == (pure (f x) :: Result String String)
+  describe "Monad (Result e)" $ do
+    describe "return" $ do
+      it "is the same as pure" $ property $ \(x :: String) -> return x == (pure x :: Result String String)
+  describe "Alternative (Parser i)" $ do
+    describe "empty" $ do
+      it "always throws an error" $ property $ \i -> case parse (empty :: Parser String String) i of
+        Err _ -> True
+        Ok _ -> False
+    describe "(<|>)" $ do
+      it "Chooses second option if first is erroneous" $ property $ \i -> parse (empty <|> str "") i == parse (str "") i
+  describe "str" $ do
+    it "can parse any given string" $ property $ \(a, b) -> parse (str a) (a ++ b) == Ok (a, b)
+  describe "anyOf" $ do
+    it "can parse the char if it is in the list" $ property $ \c s ->
+      let shouldParse = c `elem` s
+      in case parse (anyOf s) [c] of
+        Err _ | not shouldParse -> True
+        Ok (_, "") | shouldParse -> True
+        _ -> False
+  describe "noneOf" $ do
+    it "can parse the char if it is not in the list" $ property $ \c s ->
+      let should_parse = c `notElem` s
+      in case parse (noneOf s) [c] of
+        Err _ | not should_parse -> True
+        Ok (_, "") | should_parse -> True
+        _ -> False
+  describe "ws" $ do
+    it "can parse a string containing only tabs, spaces and newlines" $
+      let s = "\t \n "
+      in parse ws s `shouldBe` Ok(s, "")
+    it "can parse an empty string" $
+      parse ws "" `shouldBe` Ok("", "")
+    it "never outputs a result other than whitespace" $ property $ \s ->
+      let contains_other = any (`notElem` "\t\n ")
+      in case parse ws s of
+        Err _ -> True
+        Ok (res, _) -> not $ contains_other res
+  describe "word" $ do
+    it "can parse any given string followed by whitespace" $ property $ \(a, b) ->
+      case parse (word a) (a ++ " " ++ b) of
+        Ok (a', _) ->  a == a'
+        _ -> False
+  describe "tok" $ do
+    it "can parse 'a b'" $ parse tok "a b" `shouldBe` Ok("a", "b")
+  describe "dbl" $ do
+    it "can parse any double" $ property $ \(d :: Double) ->
+      parse dbl (show d) == Ok(d, "")
+  describe "shorten" $ do
+    it "never outputs a string longer than given length" $ property $ \len s ->
+      length (shorten (abs len) s) <= abs len
+  describe "strip" $ do
+    it "never outputs a string starting with whitespace" $ property $ \s -> case strip s of
+      (c:cs) | c `elem` "\t\n " -> False
+      _ -> True
+    it "never outputs a string ending with whitespace" $ property $ \s -> case reverse $ strip s of
+      (c:cs) | c `elem` "\t\n " -> False
+      _ -> True
