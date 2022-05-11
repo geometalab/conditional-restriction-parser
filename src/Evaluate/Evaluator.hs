@@ -1,14 +1,18 @@
+{-# LANGUAGE LambdaCase #-}
 module Evaluate.Evaluator where
 
 import Evaluate.InputData (Type (..), Value (..), ID)
-import Parse.AST (Condition (..), ConditionalRestriction, Token, ComparisonOp (..), OpeningHours)
+import Parse.AST
 import Parse.Lib (Result(..))
 import Data.Time (UTCTime)
+import Util.Monad (findM, allM)
 
 type EvalError = Either String [(ID, Type)]
 
-result :: [(ID, Value)] -> ConditionalRestriction -> Result EvalError (Maybe Token)
-result = undefined
+result :: [(ID, Value)] -> ConditionalRestriction -> Result EvalError (Maybe Token) -- TODO combine needed data output
+result ds (ConditionalRestriction exprs) = findM (\(Expression _ conds) -> allM (fulfills ds) conds) exprs >>= \case
+  Nothing -> Ok Nothing
+  Just (Expression tok _) -> Ok $ Just tok
 
 fulfills :: [(ID, Value)] -> Condition -> Result EvalError Bool
 fulfills ds (OH _) = undefined

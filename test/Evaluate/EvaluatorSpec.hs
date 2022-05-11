@@ -35,6 +35,16 @@ spec = do
   describe "timeIn" $ do
     it "gets that 18:00 is within 11:00-20:00" $
       let
-        time = read "yyyy-mm-ddThh:mm:ss[.sss]Z"
+        time = read "2022-05-10T18:00:00Z"
         span = OpeningHours [RuleSequence Normal (TimeSel [Span (Time 11 00) (Time 20 00)]) (Just True)]
       in timeIn time span `shouldBe` Just True
+    it "gets that We is within Mo-Th" $
+      let
+        time = read "2022-05-11T08:00:00Z"
+        span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Mo Th]) (Just True)]
+      in timeIn time span `shouldBe` Just True
+    it "gets that We is not within Fr-Su" $
+      let
+        time = read "2022-05-11T08:00:00Z"
+        span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Fr Su]) (Just True)]
+      in timeIn time span `shouldBe` Just False

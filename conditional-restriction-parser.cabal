@@ -32,6 +32,8 @@ library
       Parse.Lib
       Parse.OpeningHoursParser
       Parse.Parser
+      Util.Monad
+      Util.Result
   other-modules:
       Paths_conditional_restriction_parser
   hs-source-dirs:
