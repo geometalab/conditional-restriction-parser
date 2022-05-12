@@ -2,6 +2,7 @@ module Parse.OpeningHoursParser where
 import Parse.Lib
 import Parse.AST
 import Control.Applicative (Alternative(many, (<|>)), optional)
+import Data.Hourglass (WeekDay(..), TimeOfDay (TimeOfDay))
 
 pOpeningHours :: Parser String OpeningHours
 pOpeningHours = OpeningHours <$> ((:) <$> pRuleSequence Normal <*> many next_rule_sequence)
@@ -32,21 +33,21 @@ pWeekdayRange :: Parser String WeekdayRange
 pWeekdayRange = WdayRange <$> pWday <*> (word "-" *> pWday)
             <|> SingleDay <$> pWday
 
-pWday :: Parser String Wday
-pWday = Su <$ word "Su"
-    <|> Mo <$ word "Mo"
-    <|> Tu <$ word "Tu"
-    <|> We <$ word "We"
-    <|> Th <$ word "Th"
-    <|> Fr <$ word "Fr"
-    <|> Sa <$ word "Sa"
+pWday :: Parser String WeekDay
+pWday = Sunday <$ word "Su"
+    <|> Monday <$ word "Mo"
+    <|> Tuesday <$ word "Tu"
+    <|> Wednesday <$ word "We"
+    <|> Thursday <$ word "Th"
+    <|> Friday <$ word "Fr"
+    <|> Saturday <$ word "Sa"
 
 pTimeSpan :: Parser String TimeSpan
 pTimeSpan = (Span <$> pTime False <*> (word "-" *> pTime True))
         <|> Moment <$> pTime False
 
-pTime :: Bool -> Parser String Time
-pTime extended = Time <$> p_hour <*> pMinute
+pTime :: Bool -> Parser String TimeOfDay
+pTime extended = (\h m -> TimeOfDay (fromIntegral h) (fromIntegral m) 0 0) <$> p_hour <*> pMinute
   where
     p_hour = if extended then pExtendedHour else pHour
 

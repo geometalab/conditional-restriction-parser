@@ -6,15 +6,16 @@ import Parse.Lib (parse, Result(..))
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Parse.AST
 import Parse.OpeningHoursParser (pOpeningHours, pRuleSequence, pRuleModifier, pSelectorSequence, pWeekdaySelector)
+import Data.Hourglass (WeekDay(Monday, Thursday, Saturday))
 
 spec :: Spec
 spec = do
   describe "pOpeningHours" $ do
     it "can parse 'Mo'" $
-      parse pOpeningHours  "Mo" `shouldBe` Ok(OpeningHours [RuleSequence Normal (WeekdaySel [SingleDay Mo]) (Just True)], "")
+      parse pOpeningHours  "Mo" `shouldBe` Ok(OpeningHours [RuleSequence Normal (WeekdaySel [SingleDay Monday]) (Just True)], "")
   describe "pRuleSequence" $ do
     it "can parse 'Mo'" $
-      parse (pRuleSequence Normal) "Mo" `shouldBe` Ok(RuleSequence Normal (WeekdaySel [SingleDay Mo]) (Just True), "")
+      parse (pRuleSequence Normal) "Mo" `shouldBe` Ok(RuleSequence Normal (WeekdaySel [SingleDay Monday]) (Just True), "")
   describe "pRuleModfier" $ do
     it "can parse 'closed'" $
       parse pRuleModifier "closed" `shouldBe` Ok(Just False, "")
@@ -25,4 +26,4 @@ spec = do
       parse pSelectorSequence "24/7" `shouldBe` Ok(TwentyFourSeven, "")
   describe "pWeekdaySelector" $ do
     it "can parse 'Mo - Th, Sa'" $
-      parse pWeekdaySelector "Mo - Th, Sa" `shouldBe` Ok([WdayRange Mo Th, SingleDay Sa], "")
+      parse pWeekdaySelector "Mo - Th, Sa" `shouldBe` Ok([WdayRange Monday Thursday, SingleDay Saturday], "")

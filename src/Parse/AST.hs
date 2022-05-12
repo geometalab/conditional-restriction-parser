@@ -1,4 +1,5 @@
 module Parse.AST where
+import Data.Hourglass (WeekDay, TimeOfDay)
 
 type Token = String
 
@@ -38,16 +39,10 @@ data SelectorSequence = TwentyFourSeven
                       | WeekdayTime WeekdaySelector TimeSelector
  deriving (Eq, Show)
 
-data WeekdayRange = SingleDay Wday
-                  | WdayRange Wday Wday
+data WeekdayRange = SingleDay WeekDay
+                  | WdayRange WeekDay WeekDay
  deriving (Eq, Show)
 
-data Wday = Su | Mo | Tu | We | Th | Fr | Sa
- deriving (Eq, Show)
-
-data TimeSpan = Moment Time
-              | Span Time Time
- deriving (Eq, Show)
-
-data Time = Time {hour :: Int, minute :: Int}
+data TimeSpan = Moment TimeOfDay
+              | Span TimeOfDay TimeOfDay
  deriving (Eq, Show)

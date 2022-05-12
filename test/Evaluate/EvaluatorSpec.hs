@@ -7,6 +7,7 @@ import Test.Hspec (Spec, describe, it, shouldBe)
 import Test.QuickCheck (Testable(property))
 import Parse.Lib (Result(..))
 import Arbitrary.Parse.AST
+import Data.Hourglass (WeekDay(Monday, Thursday, Friday, Sunday), DateTime (DateTime), Month (May), Date (Date), TimeOfDay (TimeOfDay))
 
 spec :: Spec
 spec = do
@@ -35,16 +36,26 @@ spec = do
   describe "timeIn" $ do
     it "gets that 18:00 is within 11:00-20:00" $
       let
-        time = read "2022-05-10T18:00:00Z"
-        span = OpeningHours [RuleSequence Normal (TimeSel [Span (Time 11 00) (Time 20 00)]) (Just True)]
+        time = DateTime (Date 2022 May 10) (TimeOfDay 18 00 00 00)
+        span = OpeningHours [RuleSequence Normal (TimeSel [Span (TimeOfDay 11 00 0 0) (TimeOfDay 20 00 0 0)]) (Just True)]
       in timeIn time span `shouldBe` Just True
+    it "gets that 18:00 is not within 11:00-16:00" $
+      let
+        time = DateTime (Date 2022 May 10) (TimeOfDay 18 00 00 00)
+        span = OpeningHours [RuleSequence Normal (TimeSel [Span (TimeOfDay 11 00 0 0) (TimeOfDay 16 00 0 0)]) (Just True)]
+      in timeIn time span `shouldBe` Just False
     it "gets that We is within Mo-Th" $
       let
-        time = read "2022-05-11T08:00:00Z"
-        span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Mo Th]) (Just True)]
+        time = DateTime (Date 2022 May 11) (TimeOfDay 18 00 00 00) -- wednesday
+        span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Monday Thursday]) (Just True)]
       in timeIn time span `shouldBe` Just True
     it "gets that We is not within Fr-Su" $
       let
-        time = read "2022-05-11T08:00:00Z"
-        span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Fr Su]) (Just True)]
+        time = DateTime (Date 2022 May 11) (TimeOfDay 18 00 00 00) -- wednesday
+        span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Friday Sunday]) (Just True)]
       in timeIn time span `shouldBe` Just False
+    it "can check extended time" $
+      let
+        time = DateTime (Date 2022 May 14) (TimeOfDay 04 00 00 00) -- saturday
+        span = OpeningHours [RuleSequence Normal (WeekdayTime [SingleDay Friday] [Span (TimeOfDay 11 00 0 0) (TimeOfDay 30 00 0 0)]) (Just True)]
+      in timeIn time span `shouldBe` Just True
