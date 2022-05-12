@@ -10,16 +10,35 @@ import Data.List (nub)
 
 type EvalError = Either String [(ID, Type)]
 
-result :: [(ID, Value)] -> ConditionalRestriction -> Result EvalError (Maybe Token) -- TODO combine needed data output
-result ds (ConditionalRestriction exprs) = findM (\(Expression _ conds) -> allM (fulfills ds) conds) exprs >>= \case
+result :: [(ID, Value)] -> ConditionalRestriction -> Result ([String], [(ID, Type)]) (Maybe Token) -- TODO combine needed data output
+result ds (ConditionalRestriction exprs) = find_r (\(Expression _ conds) -> all_r (fulfills ds) conds) exprs >>= \case
   Nothing -> Ok Nothing
   Just (Expression tok _) -> Ok $ Just tok
+ where
+   find_r f (x:xs) = case f x of
+     Ok True -> Ok $ Just x
+     Ok False -> find_r f xs
+     Err (msgs, needed) -> case find_r f xs of
+       Err (msgs', needed') -> Err (msgs ++ msgs', nub $ needed ++ needed')
+       Ok v -> Err (msgs, needed)
+   find_r f [] = Ok Nothing
 
-fulfills :: [(ID, Value)] -> Condition -> Result EvalError Bool
+   all_r f (x:xs) = case f x of
+     Ok True -> all_r f xs
+     Ok False -> False <$ all_r f xs
+     Err (Left msg) -> case all_r f xs of
+       Ok _ -> Err ([msg], [])
+       Err (msgs, neededs) -> Err (msg:msgs, neededs)
+     Err (Right needed) -> case all_r f xs of
+       Ok _ -> Err ([], [needed])
+       Err (msgs, neededs) -> Err (msgs, needed:neededs)
+   all_r f [] = Ok True
+
+fulfills :: [(ID, Value)] -> Condition -> Result (Either String (ID, Type)) Bool
 fulfills ds (OH oh) = case lookup "time" ds of
   Just (VTime t) -> Ok $ timeIn t oh
-  Just _ -> Err . Left $ "Incorrect input type for time."
-  Nothing -> Err $ Right [("time", TTime)]
+  Just _ -> Err . Left $ "Incorrect input type for time"
+  Nothing -> Err $ Right ("time", TTime)
 fulfills ds (Comparison tok op val) = case lookup tok ds of
   Just (VNum d) -> Ok $ case op of
     Gt -> d > val
@@ -28,11 +47,11 @@ fulfills ds (Comparison tok op val) = case lookup tok ds of
     LtEq -> d <= val
     Eq -> d == val
   Just _ -> Err . Left $ "Incorrect input type for " ++ tok
-  Nothing -> Err $ Right [(tok, TNum)]
+  Nothing -> Err $ Right (tok, TNum)
 fulfills ds (Absolute tok) = case lookup tok ds of
   Just (VBool b) -> Ok b
   Just _ -> Err . Left $ "Incorrect input type for " ++ tok
-  Nothing -> Err $ Right [(tok, TBool)]
+  Nothing -> Err $ Right (tok, TBool)
 
 
 timeIn :: Timeable t => t -> OpeningHours -> Bool

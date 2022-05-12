@@ -16,7 +16,7 @@ spec = do
       let
         ds = [("wet", VBool True), ("snow", VBool True)]
         restriction = ConditionalRestriction [Expression "120" [Absolute "wet"], Expression "100" [Absolute "snow"]]
-      in result ds restriction `shouldBe` Ok Nothing
+      in result ds restriction `shouldBe` Ok (Just "120")
     it "returns nothing on '120 @ wet; 100 @ snow' with 'wet' = False and 'snow' = False" $
       let
         ds = [("wet", VBool False), ("snow", VBool False)]
@@ -26,7 +26,8 @@ spec = do
       let
         duplicate_restriction = ConditionalRestriction [Expression "open" [cond, cond], Expression "closed" [cond]]
       in case (result [] duplicate_restriction, fulfills [] cond) of
-        (Err (Right a), Err (Right b)) -> a == b
+        (Err (_, [a]), Err (Right b)) -> a == b
+        (Err _, _) -> False
         _ -> True
   describe "fulfills" $ do
     it "returns true on 'wet' with 'wet' = True" $
