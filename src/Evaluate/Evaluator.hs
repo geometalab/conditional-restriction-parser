@@ -3,15 +3,16 @@ module Evaluate.Evaluator where
 
 import Parse.InputData (Type (..), Value (..), ID)
 import Parse.AST
-import Parse.Lib (Result(..))
+import Parse.Lib
 import Util.Monad (findM, allM)
 import Data.Hourglass
 import Data.List (nub)
+import Util.Result
 
 type EvalError = Either String [(ID, Type)]
 
 result :: [(ID, Value)] -> ConditionalRestriction -> Result ([String], [(ID, Type)]) (Maybe Token) -- TODO combine needed data output
-result ds (ConditionalRestriction exprs) = find_r (\(Expression _ conds) -> all_r (fulfills ds) conds) exprs >>= \case
+result ds (ConditionalRestriction exprs) = find_r (\(Expression _ conds) -> all_r (fulfills ds) conds) (reverse exprs) >>= \case
   Nothing -> Ok Nothing
   Just (Expression tok _) -> Ok $ Just tok
  where
@@ -54,7 +55,7 @@ fulfills ds (Absolute tok) = case lookup tok ds of
   Nothing -> Err $ Right (tok, TBool)
 
 
-timeIn :: Timeable t => t -> OpeningHours -> Bool
+timeIn :: DateTime -> OpeningHours -> Bool
 timeIn t oh = timeInSelector time (ohTimes oh !! fromEnum weekday)
            || timeExtendedInSelector time (ohTimes oh !! fromEnum previous_weekday)
   where

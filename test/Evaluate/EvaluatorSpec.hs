@@ -5,18 +5,19 @@ import Evaluate.Evaluator (fulfills, result, timeIn)
 import Parse.AST
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Test.QuickCheck (Testable(property))
-import Parse.Lib (Result(..))
+import Parse.Lib
+import Util.Result
 import Arbitrary.Parse.AST
 import Data.Hourglass (WeekDay(Monday, Thursday, Friday, Sunday), DateTime (DateTime), Month (May), Date (Date), TimeOfDay (TimeOfDay))
 
 spec :: Spec
 spec = do
   describe "result" $ do
-    it "returns 120 on '120 @ wet; 100 @ snow' with 'wet' = True and 'snow' = True" $
+    it "returns 100 on '120 @ wet; 100 @ snow' with 'wet' = True and 'snow' = True" $
       let
         ds = [("wet", VBool True), ("snow", VBool True)]
         restriction = ConditionalRestriction [Expression "120" [Absolute "wet"], Expression "100" [Absolute "snow"]]
-      in result ds restriction `shouldBe` Ok (Just "120")
+      in result ds restriction `shouldBe` Ok (Just "100")
     it "returns nothing on '120 @ wet; 100 @ snow' with 'wet' = False and 'snow' = False" $
       let
         ds = [("wet", VBool False), ("snow", VBool False)]

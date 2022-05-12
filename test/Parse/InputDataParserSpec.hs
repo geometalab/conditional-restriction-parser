@@ -4,7 +4,8 @@ import Test.Hspec
 import Parse.InputDataParser (pValue)
 import Parse.InputData
 import Data.Hourglass (TimeOfDay(TimeOfDay), Date (Date), DateTime (DateTime), Month (May))
-import Parse.Lib (Result(..), parse)
+import Parse.Lib
+import Util.Result
 
 spec :: Spec
 spec = do

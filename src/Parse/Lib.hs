@@ -4,26 +4,7 @@ module Parse.Lib where
 import Control.Applicative (Alternative (many), empty, (<|>))
 import Control.Monad ((>=>), replicateM)
 import Data.Bifunctor (Bifunctor (first))
-
-data Result e a
-  = Err e
-  | Ok a
-  deriving (Eq, Show)
-
-instance Functor (Result e) where
-  fmap f (Ok a) = Ok (f a)
-  fmap _ (Err e) = Err e
-
-instance Applicative (Result e) where
-  pure = Ok
-  (Ok f) <*> (Ok x) = Ok (f x)
-  (Err f) <*> _ = Err f
-  _ <*> (Err x) = Err x
-
-instance Monad (Result e) where
-  return = pure
-  (Ok x) >>= f = f x
-  (Err x) >>= _ = Err x
+import Util.Result
 
 newtype Parser i a = Parser
   { parse :: i -> Result String (a, i)
@@ -93,6 +74,11 @@ bint max = read <$> case digits max of
   digits 0 = []
   digits x = digits (x `div` 10) ++ [x `mod` 10]
   d2c = head . show
+
+end :: Parser String ()
+end = Parser $ \case
+  [] -> Ok ((), "")
+  i -> Err $ "There is still input left: " ++ i
 
 shorten :: Int -> String -> String
 shorten len str | len > 3 =

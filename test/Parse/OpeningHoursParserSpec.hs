@@ -2,11 +2,12 @@ module Parse.OpeningHoursParserSpec where
 
 import Test.Hspec (Spec, describe)
 import Parse.Parser (pCondition, pMultipleConditions, pExpression, pConditionalRestriction, pCompOperator, pIdentifier)
-import Parse.Lib (parse, Result(..))
+import Parse.Lib
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Parse.AST
 import Parse.OpeningHoursParser (pOpeningHours, pRuleSequence, pRuleModifier, pSelectorSequence, pWeekdaySelector)
 import Data.Hourglass (WeekDay(Monday, Thursday, Saturday))
+import Util.Result
 
 spec :: Spec
 spec = do

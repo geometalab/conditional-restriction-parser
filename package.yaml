@@ -40,6 +40,9 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - conditional-restriction-parser
+    when: # https://stackoom.com/en/question/4ZIzr
+    - condition: false
+      other-modules: Paths_conditional_restriction_parser
 
 tests:
   conditional-restriction-parser-test:

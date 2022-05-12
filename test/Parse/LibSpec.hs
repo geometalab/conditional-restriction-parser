@@ -7,6 +7,7 @@ import Parse.AST (ComparisonOp(..), Condition(..))
 import Test.QuickCheck (Testable(property))
 import Test.QuickCheck.Function -- cannot import Fn specifically
 import Control.Applicative (Alternative(empty, (<|>)))
+import Util.Result
 
 spec :: Spec
 spec = do

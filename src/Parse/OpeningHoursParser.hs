@@ -47,7 +47,7 @@ pTimeSpan = (Span <$> pTime False <*> (word "-" *> pTime True))
         <|> Moment <$> pTime False
 
 pTime :: Bool -> Parser String TimeOfDay
-pTime extended = (\h m -> TimeOfDay (fromIntegral h) (fromIntegral m) 0 0) <$> p_hour <*> bint 59
+pTime extended = (\h m -> TimeOfDay (fromIntegral h) (fromIntegral m) 0 0) <$> p_hour <*> (str ":" *> bint 59)
   where
     p_hour = if extended then bint 48 else bint 24
 

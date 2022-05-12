@@ -15,7 +15,8 @@ pExpression :: Parser String Expression
 pExpression = Expression <$> (strip <$> many (noneOf "@")) <*> (word "@" *> pMultipleConditions)
 
 pMultipleConditions :: Parser String [Condition]
-pMultipleConditions = (:) <$> pCondition <*> many (word "AND" *> pCondition)
+pMultipleConditions = (word "(" *> pMultipleConditions <* word ")")
+                  <|> (:) <$> pCondition <*> many (word "AND" *> pCondition)
 
 pCondition :: Parser String Condition
 pCondition = (word "(" *> pCondition <* word ")")
