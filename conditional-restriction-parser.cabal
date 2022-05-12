@@ -26,9 +26,10 @@ source-repository head
 library
   exposed-modules:
       Evaluate.Evaluator
-      Evaluate.InputData
       Lib
       Parse.AST
+      Parse.InputData
+      Parse.InputDataParser
       Parse.Lib
       Parse.OpeningHoursParser
       Parse.Parser
@@ -64,10 +65,11 @@ test-suite conditional-restriction-parser-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Arbitrary.Evaluate.InputData
       Arbitrary.Parse.AST
+      Arbitrary.Parse.InputData
       Evaluate.EvaluatorSpec
       IntegrationSpec
+      Parse.InputDataParserSpec
       Parse.LibSpec
       Parse.OpeningHoursParserSpec
       Parse.ParserSpec

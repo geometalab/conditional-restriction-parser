@@ -5,7 +5,7 @@ module Lib
 where
 
 import Parse.Parser (pConditionalRestriction)
-import Evaluate.InputData ( ID, Type, Value)
+import Parse.InputData ( ID, Type, Value)
 import Parse.Lib (Result)
 import Parse.AST (Token)
 

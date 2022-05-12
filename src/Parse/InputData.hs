@@ -1,8 +1,9 @@
-module Evaluate.InputData where
+module Parse.InputData where
 
 import Data.Time (UTCTime)
 import Parse.AST (Condition (..), ConditionalRestriction (ConditionalRestriction), Expression (Expression))
 import Data.List (nub)
+import Data.Hourglass (DateTime)
 
 type ID = String
 
@@ -15,7 +16,7 @@ data Type
 data Value
   = VBool Bool
   | VNum Double
-  | VTime UTCTime
+  | VTime DateTime
  deriving (Eq, Show)
 
 -- needs :: ConditionalRestriction -> [(ID, Type)]

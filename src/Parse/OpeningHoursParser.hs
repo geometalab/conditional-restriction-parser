@@ -47,26 +47,10 @@ pTimeSpan = (Span <$> pTime False <*> (word "-" *> pTime True))
         <|> Moment <$> pTime False
 
 pTime :: Bool -> Parser String TimeOfDay
-pTime extended = (\h m -> TimeOfDay (fromIntegral h) (fromIntegral m) 0 0) <$> p_hour <*> pMinute
+pTime extended = (\h m -> TimeOfDay (fromIntegral h) (fromIntegral m) 0 0) <$> p_hour <*> bint 59
   where
-    p_hour = if extended then pExtendedHour else pHour
+    p_hour = if extended then bint 48 else bint 24
 
-pHour :: Parser String Int
-pHour = read <$> (p0 <|> p1 <|> p2)
-  where
-    concat s c = s ++ [c]
-    p0 = concat <$> str "0" <*> anyOf ['0'..'9']
-    p1 = concat <$> str "1" <*> anyOf ['0'..'9']
-    p2 = concat <$> str "2" <*> anyOf ['0'..'4']
-
-pExtendedHour :: Parser String Int
-pExtendedHour = read <$> (p03 <|> p4)
-  where
-    p03 = (\x y -> [x,y]) <$> anyOf ['0'..'3'] <*> anyOf ['0'..'9']
-    p4 = (\s c -> s ++ [c]) <$> str "4" <*> anyOf ['0'..'8']
-
-pMinute :: Parser String Int
-pMinute = read <$> ((\x y -> [x, y]) <$> anyOf ['0'..'5'] <*> anyOf ['0'..'9'])
 
 pComment :: Parser String String
 pComment = str "\"" *> many (noneOf "\"") <* word "\""

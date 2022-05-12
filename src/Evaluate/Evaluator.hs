@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Evaluate.Evaluator where
 
-import Evaluate.InputData (Type (..), Value (..), ID)
+import Parse.InputData (Type (..), Value (..), ID)
 import Parse.AST
 import Parse.Lib (Result(..))
 import Util.Monad (findM, allM)
@@ -16,7 +16,10 @@ result ds (ConditionalRestriction exprs) = findM (\(Expression _ conds) -> allM 
   Just (Expression tok _) -> Ok $ Just tok
 
 fulfills :: [(ID, Value)] -> Condition -> Result EvalError Bool
-fulfills ds (OH _) = undefined
+fulfills ds (OH oh) = case lookup "time" ds of
+  Just (VTime t) -> Ok $ timeIn t oh
+  Just _ -> Err . Left $ "Incorrect input type for time."
+  Nothing -> Err $ Right [("time", TTime)]
 fulfills ds (Comparison tok op val) = case lookup tok ds of
   Just (VNum d) -> Ok $ case op of
     Gt -> d > val
@@ -32,9 +35,9 @@ fulfills ds (Absolute tok) = case lookup tok ds of
   Nothing -> Err $ Right [(tok, TBool)]
 
 
-timeIn :: Timeable t => t -> OpeningHours -> Maybe Bool
-timeIn t oh = Just $ timeInSelector time (ohTimes oh !! fromEnum weekday)
-                  || timeExtendedInSelector time (ohTimes oh !! fromEnum previous_weekday)
+timeIn :: Timeable t => t -> OpeningHours -> Bool
+timeIn t oh = timeInSelector time (ohTimes oh !! fromEnum weekday)
+           || timeExtendedInSelector time (ohTimes oh !! fromEnum previous_weekday)
   where
     date = timeGetDate t
     time = timeGetTimeOfDay t

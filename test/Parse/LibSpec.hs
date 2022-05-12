@@ -2,7 +2,7 @@
 module Parse.LibSpec where
 
 import Test.Hspec ( Spec, describe, Spec, describe, it, shouldBe )
-import Parse.Lib (parse, Result(..), str, anyOf, noneOf, ws, word, tok, shorten, dbl, Parser (Parser), strip)
+import Parse.Lib
 import Parse.AST (ComparisonOp(..), Condition(..))
 import Test.QuickCheck (Testable(property))
 import Test.QuickCheck.Function -- cannot import Fn specifically
@@ -65,6 +65,8 @@ spec = do
   describe "dbl" $ do
     it "can parse any double" $ property $ \(d :: Double) ->
       parse dbl (show d) == Ok(d, "")
+  describe "bint" $ do
+    it "can parse its max value" $ property $ \i -> let i' = abs i in parse (bint i') (show i') == Ok(i', "")
   describe "shorten" $ do
     it "never outputs a string longer than given length" $ property $ \len s ->
       length (shorten (abs len) s) <= abs len

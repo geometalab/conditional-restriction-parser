@@ -2,7 +2,7 @@
 module Parse.Lib where
 
 import Control.Applicative (Alternative (many), empty, (<|>))
-import Control.Monad ((>=>))
+import Control.Monad ((>=>), replicateM)
 import Data.Bifunctor (Bifunctor (first))
 
 data Result e a
@@ -42,6 +42,12 @@ instance Alternative (Parser i) where
     res@(Ok _) -> res
     Err msg -> b i
 
+instance Monad (Parser i) where
+  return = pure
+  (Parser pa) >>= f = Parser $ \i -> case pa i of
+    Ok (a, i') -> parse (f a) i'
+    Err msg -> Err msg
+
 str :: String -> Parser String String
 str s = Parser $ \i ->
   if take len i == s
@@ -77,6 +83,16 @@ dbl :: Parser String Double
 dbl = Parser $ \i -> case reads i of
   [(x, rem)] -> Ok (x, rem)
   _ -> Err $ "No double: " ++ shorten 16 i
+
+bint :: Int -> Parser String Int
+bint max = read <$> case digits max of
+  [] -> str "0"
+  (x:xs) -> (:) <$> anyOf ['0'..d2c (x-1)] <*> replicateM (length xs) (anyOf ['0'..'9'])
+        <|> (:) <$> anyOf [d2c x] <*> mapM (\x' -> anyOf ['0'..d2c x']) xs
+ where
+  digits 0 = []
+  digits x = digits (x `div` 10) ++ [x `mod` 10]
+  d2c = head . show
 
 shorten :: Int -> String -> String
 shorten len str | len > 3 =
