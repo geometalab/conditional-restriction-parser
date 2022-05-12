@@ -54,8 +54,13 @@ spec = do
         time = DateTime (Date 2022 May 11) (TimeOfDay 18 00 00 00) -- wednesday
         span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Friday Sunday]) (Just True)]
       in timeIn time span `shouldBe` Just False
-    it "can check extended time" $
+    it "can check extended time 11:00-30:00" $
       let
         time = DateTime (Date 2022 May 14) (TimeOfDay 04 00 00 00) -- saturday
         span = OpeningHours [RuleSequence Normal (WeekdayTime [SingleDay Friday] [Span (TimeOfDay 11 00 0 0) (TimeOfDay 30 00 0 0)]) (Just True)]
+      in timeIn time span `shouldBe` Just True
+    it "can check extended time 11:00-06:00" $
+      let
+        time = DateTime (Date 2022 May 14) (TimeOfDay 04 00 00 00) -- saturday
+        span = OpeningHours [RuleSequence Normal (WeekdayTime [SingleDay Friday] [Span (TimeOfDay 11 00 0 0) (TimeOfDay 06 00 0 0)]) (Just True)]
       in timeIn time span `shouldBe` Just True

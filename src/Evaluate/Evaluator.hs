@@ -32,12 +32,14 @@ fulfills ds (Absolute tok) = case lookup tok ds of
   Nothing -> Err $ Right [(tok, TBool)]
 
 
-timeIn :: Timeable t => t -> OpeningHours -> Maybe Bool -- TODO support extended time
+timeIn :: Timeable t => t -> OpeningHours -> Maybe Bool
 timeIn t oh = Just $ timeInSelector time (ohTimes oh !! fromEnum weekday)
+                  || timeExtendedInSelector time (ohTimes oh !! fromEnum previous_weekday)
   where
     date = timeGetDate t
     time = timeGetTimeOfDay t
     weekday = getWeekDay date
+    previous_weekday = if weekday == minBound then maxBound else pred weekday
 
 ohTimes :: OpeningHours -> [TimeSelector]
 ohTimes (OpeningHours rs) = foldr set_time_ranges [[] | _ <- range Sunday Saturday] rs
@@ -61,7 +63,15 @@ timeInSelector :: TimeOfDay -> TimeSelector -> Bool
 timeInSelector t = any match_t
   where
     match_t (Moment t') = t' == t
-    match_t (Span t1 t2) = t >= t1 && t <= t2
+    match_t (Span t1 t2) = t >= t1 && (t <= t2 || t1 > t2)
+
+timeExtendedInSelector :: TimeOfDay -> TimeSelector -> Bool
+timeExtendedInSelector t = any match_t
+  where
+    match_t (Moment (TimeOfDay h' m' s' n')) = t == TimeOfDay (h' - 24) m' s' n'
+    match_t (Span t1 t2) | t1 > t2 = t <= t2
+    match_t (Span t1 (TimeOfDay h' m' s' n')) | h' >= 24 = t < TimeOfDay (h' - 24) m' s' n'
+    match_t _ = False
 
 addTimespan :: TimeSpan -> TimeSelector -> TimeSelector
 addTimespan (Moment t) sel@(Moment t':ts) | t == t' = sel
