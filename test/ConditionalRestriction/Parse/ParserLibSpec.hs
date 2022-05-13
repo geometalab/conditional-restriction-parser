@@ -1,13 +1,13 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-module Parse.LibSpec where
+module ConditionalRestriction.Parse.ParserLibSpec where
 
 import Test.Hspec ( Spec, describe, Spec, describe, it, shouldBe )
-import Parse.Lib
-import Parse.AST (ComparisonOp(..), Condition(..))
 import Test.QuickCheck (Testable(property))
 import Test.QuickCheck.Function -- cannot import Fn specifically
 import Control.Applicative (Alternative(empty, (<|>)))
-import Util.Result
+
+import ConditionalRestriction
+import ConditionalRestriction.Parse.ParserLib
 
 spec :: Spec
 spec = do

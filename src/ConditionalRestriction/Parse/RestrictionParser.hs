@@ -1,9 +1,10 @@
-module Parse.Parser where
-import Parse.AST (Expression (Expression), ConditionalRestriction (ConditionalRestriction), Condition (..), ComparisonOp (..))
-import Parse.Lib (Parser, word, noneOf, tok, str, anyOf, dbl, ws, strip)
+module ConditionalRestriction.Parse.RestrictionParser where
+
 import Control.Applicative (optional, Alternative (many, (<|>)))
 import Data.Functor ((<&>))
-import Parse.OpeningHoursParser (pOpeningHours)
+import ConditionalRestriction.Parse.ParserLib
+import ConditionalRestriction.Parse.AST
+import ConditionalRestriction.Parse.OpeningHoursParser
 
 pConditionalRestriction :: Parser String ConditionalRestriction
 pConditionalRestriction = pack <$> pExpression <*> optional (word ";" *> pExpression)

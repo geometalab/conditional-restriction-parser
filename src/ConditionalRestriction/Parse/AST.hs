@@ -1,4 +1,5 @@
-module Parse.AST where
+module ConditionalRestriction.Parse.AST where
+
 import Data.Hourglass (WeekDay, TimeOfDay)
 
 type Token = String

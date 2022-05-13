@@ -1,11 +1,11 @@
-module Parse.InputDataParserSpec where
+module ConditionalRestriction.Parse.InputDataParserSpec where
 
 import Test.Hspec
-import Parse.InputDataParser (pValue)
-import Parse.InputData
 import Data.Hourglass (TimeOfDay(TimeOfDay), Date (Date), DateTime (DateTime), Month (May))
-import Parse.Lib
-import Util.Result
+import ConditionalRestriction.Parse
+import ConditionalRestriction.Parse.InputDataParser
+import ConditionalRestriction.Parse.InputData
+import ConditionalRestriction.Result
 
 spec :: Spec
 spec = do

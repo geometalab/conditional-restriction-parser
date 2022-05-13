@@ -1,11 +1,11 @@
-module Parse.ParserSpec where
+module ConditionalRestriction.Parse.RestrictionParserSpec where
 
-import Test.Hspec (Spec, describe)
-import Parse.Parser (pCondition, pMultipleConditions, pExpression, pConditionalRestriction, pCompOperator, pIdentifier)
-import Parse.Lib (parse)
-import Util.Result
 import Test.Hspec (Spec, describe, it, shouldBe)
-import Parse.AST (ComparisonOp(..), Condition(..), Expression (Expression), ConditionalRestriction (ConditionalRestriction))
+
+import ConditionalRestriction
+import ConditionalRestriction.Parse
+import ConditionalRestriction.Parse.RestrictionParser
+import ConditionalRestriction.Parse.AST
 
 spec :: Spec
 spec = do

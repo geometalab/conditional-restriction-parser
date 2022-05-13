@@ -1,8 +1,9 @@
-module Parse.OpeningHoursParser where
-import Parse.Lib
-import Parse.AST
+module ConditionalRestriction.Parse.OpeningHoursParser where
+
 import Control.Applicative (Alternative(many, (<|>)), optional)
 import Data.Hourglass (WeekDay(..), TimeOfDay (TimeOfDay))
+import ConditionalRestriction.Parse.ParserLib
+import ConditionalRestriction.Parse.AST
 
 pOpeningHours :: Parser String OpeningHours
 pOpeningHours = OpeningHours <$> ((:) <$> pRuleSequence Normal <*> many next_rule_sequence)

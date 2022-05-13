@@ -1,6 +1,6 @@
-module Arbitrary.Parse.AST where
+module Arbitrary.ConditionalRestriction.Parse.AST where
 import Test.QuickCheck (Arbitrary (arbitrary), elements, listOf, oneof, Gen)
-import Parse.AST (ConditionalRestriction (ConditionalRestriction), Condition (..), ComparisonOp (..), Expression (Expression))
+import ConditionalRestriction.Parse.AST (ConditionalRestriction (ConditionalRestriction), Condition (..), ComparisonOp (..), Expression (Expression))
 import Data.Maybe (fromMaybe, maybeToList)
 
 instance Arbitrary ConditionalRestriction where

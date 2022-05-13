@@ -1,10 +1,10 @@
 {-# LANGUAGE LambdaCase #-}
-module Parse.Lib where
+module ConditionalRestriction.Parse.ParserLib where
 
 import Control.Applicative (Alternative (many), empty, (<|>))
 import Control.Monad ((>=>), replicateM)
 import Data.Bifunctor (Bifunctor (first))
-import Util.Result
+import ConditionalRestriction.Result ( Result(..) )
 
 newtype Parser i a = Parser
   { parse :: i -> Result String (a, i)

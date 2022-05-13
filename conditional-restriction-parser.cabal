@@ -25,16 +25,16 @@ source-repository head
 
 library
   exposed-modules:
-      Evaluate.Evaluator
-      Lib
-      Parse.AST
-      Parse.InputData
-      Parse.InputDataParser
-      Parse.Lib
-      Parse.OpeningHoursParser
-      Parse.Parser
-      Util.Monad
-      Util.Result
+      ConditionalRestriction
+      ConditionalRestriction.Evaluate
+      ConditionalRestriction.Parse
+      ConditionalRestriction.Parse.AST
+      ConditionalRestriction.Parse.InputData
+      ConditionalRestriction.Parse.InputDataParser
+      ConditionalRestriction.Parse.OpeningHoursParser
+      ConditionalRestriction.Parse.ParserLib
+      ConditionalRestriction.Parse.RestrictionParser
+      ConditionalRestriction.Result
   other-modules:
       Paths_conditional_restriction_parser
   hs-source-dirs:
@@ -63,14 +63,14 @@ test-suite conditional-restriction-parser-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Arbitrary.Parse.AST
-      Arbitrary.Parse.InputData
-      Evaluate.EvaluatorSpec
+      Arbitrary.ConditionalRestriction.Parse.AST
+      Arbitrary.ConditionalRestriction.Parse.InputData
+      ConditionalRestriction.EvaluateSpec
+      ConditionalRestriction.Parse.InputDataParserSpec
+      ConditionalRestriction.Parse.OpeningHoursParserSpec
+      ConditionalRestriction.Parse.ParserLibSpec
+      ConditionalRestriction.Parse.RestrictionParserSpec
       IntegrationSpec
-      Parse.InputDataParserSpec
-      Parse.LibSpec
-      Parse.OpeningHoursParserSpec
-      Parse.ParserSpec
       Paths_conditional_restriction_parser
   hs-source-dirs:
       test

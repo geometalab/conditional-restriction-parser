@@ -1,16 +1,20 @@
 {-# LANGUAGE LambdaCase #-}
-module Evaluate.Evaluator where
+module ConditionalRestriction.Evaluate (result, fulfills, timeIn) where
 
-import Parse.InputData (Type (..), Value (..), ID)
-import Parse.AST
-import Parse.Lib
-import Util.Monad (findM, allM)
 import Data.Hourglass
 import Data.List (nub)
-import Util.Result
+import ConditionalRestriction.Parse.AST
+import ConditionalRestriction.Parse.InputData
+import ConditionalRestriction.Result
 
 type EvalError = Either String [(ID, Type)]
 
+-- | The 'result' function takes input data in the form of ('ID', 'Value') and a 'ConditionalRestriction' and returns
+-- the result of that 'ConditionalRestriction' when applied to the input data given. If data needed for the evaluation
+-- is missing or of the wrong type, it will return a list of error messages and a list of missing data types instead.
+--
+-- Note that this function will accept incomplete data if it is enough to evaluate the expression, but will always return
+-- a complete list of needed data types.
 result :: [(ID, Value)] -> ConditionalRestriction -> Result ([String], [(ID, Type)]) (Maybe Token) -- TODO combine needed data output
 result ds (ConditionalRestriction exprs) = find_r (\(Expression _ conds) -> all_r (fulfills ds) conds) (reverse exprs) >>= \case
   Nothing -> Ok Nothing
@@ -35,6 +39,9 @@ result ds (ConditionalRestriction exprs) = find_r (\(Expression _ conds) -> all_
        Err (msgs, neededs) -> Err (msgs, needed:neededs)
    all_r f [] = Ok True
 
+-- | The 'fulfills' function takes input data in the form of ('ID', 'Value') and a 'Condition' and returns
+-- whether that condition is fulfilled. If some data is missing, it will return the missing data 'ID' and 'Type'
+-- and if the given data is of the wrong type, it will return an error message.
 fulfills :: [(ID, Value)] -> Condition -> Result (Either String (ID, Type)) Bool
 fulfills ds (OH oh) = case lookup "time" ds of
   Just (VTime t) -> Ok $ timeIn t oh
@@ -55,6 +62,8 @@ fulfills ds (Absolute tok) = case lookup tok ds of
   Nothing -> Err $ Right (tok, TBool)
 
 
+-- | The 'timeIn' function returns wheter a 'DateTime' is within given 'OpeningHours'. Unknown values count as not
+-- within the opening hours.
 timeIn :: DateTime -> OpeningHours -> Bool
 timeIn t oh = timeInSelector time (ohTimes oh !! fromEnum weekday)
            || timeExtendedInSelector time (ohTimes oh !! fromEnum previous_weekday)

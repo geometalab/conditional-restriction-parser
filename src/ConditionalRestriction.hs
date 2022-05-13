@@ -1,20 +1,17 @@
 {-# LANGUAGE TupleSections #-}
-module Lib
+module ConditionalRestriction
   ( needsData,
     evaluate,
-    timeIn,
-    timeInSelector
+    ID, Value(..), Type(..), Token,
+    Result(..)
   )
 where
 
-import Parse.Parser (pConditionalRestriction)
-import Parse.InputData ( ID, Type, Value)
-import Parse.AST (Token)
-import Util.Result
-import Evaluate.Evaluator (result, timeIn, timeInSelector)
-import Parse.Lib (Parser(parse), end)
-import Parse.InputDataParser (pValue)
 import Data.Bifunctor (Bifunctor(first))
+import ConditionalRestriction.Result
+import ConditionalRestriction.Parse
+import ConditionalRestriction.Evaluate
+import ConditionalRestriction.Parse.ParserLib (end)
 
 
 needsData :: String -> Result String [(ID, Type)]

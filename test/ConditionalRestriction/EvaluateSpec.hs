@@ -1,14 +1,13 @@
 {-# LANGUAGE ScopedTypeVariables  #-}
-module Evaluate.EvaluatorSpec where
-import Parse.InputData (Value(..))
-import Evaluate.Evaluator (fulfills, result, timeIn)
-import Parse.AST
+module ConditionalRestriction.EvaluateSpec where
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Test.QuickCheck (Testable(property))
-import Parse.Lib
-import Util.Result
-import Arbitrary.Parse.AST
 import Data.Hourglass (WeekDay(Monday, Thursday, Friday, Sunday), DateTime (DateTime), Month (May), Date (Date), TimeOfDay (TimeOfDay))
+import ConditionalRestriction.Evaluate
+import ConditionalRestriction.Result
+import ConditionalRestriction.Parse.AST
+import ConditionalRestriction.Parse.InputData
+import Arbitrary.ConditionalRestriction.Parse.AST
 
 spec :: Spec
 spec = do

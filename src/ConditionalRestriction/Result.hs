@@ -1,4 +1,5 @@
-module Util.Result where
+module ConditionalRestriction.Result where
+
 import Data.Bifunctor (Bifunctor, bimap)
 
 data Result e a
