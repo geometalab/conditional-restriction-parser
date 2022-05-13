@@ -1,13 +1,20 @@
-{-|
-Parsers for input data values.
--}
+-- | Parsers for input data values.
 module ConditionalRestriction.Parse.InputDataParser where
 
-import Control.Applicative (Alternative(many, (<|>)), optional)
-import Data.Hourglass (TimeOfDay(TimeOfDay), Date (Date), DateTime (DateTime))
-import Control.Monad (replicateM)
 import ConditionalRestriction.Internal.Parse.ParserLib
-import ConditionalRestriction.Parse.InputData
+  ( Parser,
+    bint,
+    dbl,
+    str,
+  )
+import ConditionalRestriction.Parse.InputData (Value (..))
+import Control.Applicative (Alternative ((<|>)))
+import Control.Monad (replicateM)
+import Data.Hourglass
+  ( Date (Date),
+    DateTime (DateTime),
+    TimeOfDay (TimeOfDay),
+  )
 
 -- | Parses 'Value's. See 'pBool', 'pNum' and 'pTime' for formats.
 pValue :: Parser String Value
@@ -15,7 +22,8 @@ pValue = pBool <|> pTime <|> pNum
 
 -- | Parses boolean values. Possible values are @"true"@ and @"false"@.
 pBool :: Parser String Value
-pBool = VBool True <$ str "true"
+pBool =
+  VBool True <$ str "true"
     <|> VBool False <$ str "false"
 
 -- | Parses numbers. Values can be with or without decimal places, i.e. @"5"@ or @"5.34"@.

@@ -1,13 +1,12 @@
 {-# LANGUAGE LambdaCase #-}
-{-|
-Parsing library. Implements a simple 'Parser' type, and some basic parsers, e.g. 'ws', 'dbl'.
--}
+
+-- | Parsing library. Implements a simple 'Parser' type, and some basic parsers, e.g. 'ws', 'dbl'.
 module ConditionalRestriction.Internal.Parse.ParserLib where
 
-import Control.Applicative (Alternative (many), empty, (<|>))
-import Control.Monad ((>=>), replicateM)
+import ConditionalRestriction.Result (Result (..))
+import Control.Applicative (Alternative (empty, many, (<|>)))
+import Control.Monad (replicateM, (>=>))
 import Data.Bifunctor (Bifunctor (first))
-import ConditionalRestriction.Result ( Result(..) )
 
 -- | A generic parser. Takes an input type @i@ and returns an output type @a@.
 newtype Parser i a = Parser
@@ -44,16 +43,18 @@ str s = Parser $ \i ->
 anyOf :: [Char] -> Parser String Char
 anyOf cs = Parser $ \case
   [] -> Err "Empty input."
-  (i : is) -> if i `elem` cs
-    then Ok (i, is)
-    else Err $ show i ++ " does not match any of '" ++ cs ++ "'"
+  (i : is) ->
+    if i `elem` cs
+      then Ok (i, is)
+      else Err $ show i ++ " does not match any of '" ++ cs ++ "'"
 
 noneOf :: [Char] -> Parser String Char
 noneOf cs = Parser $ \case
   [] -> Err "Empty input."
-  (i : is) -> if i `elem` cs
-    then Err $ show i ++ " matches '" ++ cs ++ "'"
-    else Ok (i, is)
+  (i : is) ->
+    if i `elem` cs
+      then Err $ show i ++ " matches '" ++ cs ++ "'"
+      else Ok (i, is)
 
 ws :: Parser String String
 ws = many (anyOf "\t\n ")
@@ -70,14 +71,16 @@ dbl = Parser $ \i -> case reads i of
   _ -> Err $ "No double: " ++ shorten 16 i
 
 bint :: Int -> Parser String Int
-bint max = read <$> case digits max of
-  [] -> str "0"
-  (x:xs) -> (:) <$> anyOf ['0'..d2c (x-1)] <*> replicateM (length xs) (anyOf ['0'..'9'])
-        <|> (:) <$> anyOf [d2c x] <*> mapM (\x' -> anyOf ['0'..d2c x']) xs
- where
-  digits 0 = []
-  digits x = digits (x `div` 10) ++ [x `mod` 10]
-  d2c = head . show
+bint max =
+  read <$> case digits max of
+    [] -> str "0"
+    (x : xs) ->
+      (:) <$> anyOf ['0' .. d2c (x - 1)] <*> replicateM (length xs) (anyOf ['0' .. '9'])
+        <|> (:) <$> anyOf [d2c x] <*> mapM (\x' -> anyOf ['0' .. d2c x']) xs
+  where
+    digits 0 = []
+    digits x = digits (x `div` 10) ++ [x `mod` 10]
+    d2c = head . show
 
 end :: Parser String ()
 end = Parser $ \case
@@ -85,12 +88,14 @@ end = Parser $ \case
   i -> Err $ "There is still input left: " ++ i
 
 shorten :: Int -> String -> String
-shorten len str | len > 3 =
-  if length str > len
-    then take (len - 3) str ++ "..."
-    else str
+shorten len str
+  | len > 3 =
+    if length str > len
+      then take (len - 3) str ++ "..."
+      else str
 shorten len str = take len str
 
 strip :: String -> String
 strip = drop_ws . reverse . drop_ws . reverse
-  where drop_ws = dropWhile (`elem` "\t\n ")
+  where
+    drop_ws = dropWhile (`elem` "\t\n ")

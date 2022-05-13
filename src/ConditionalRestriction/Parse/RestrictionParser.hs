@@ -1,6 +1,4 @@
-{-|
-Parser for conditional restrictions.
--}
+-- | Parser for conditional restrictions.
 module ConditionalRestriction.Parse.RestrictionParser (pConditionalRestriction, pCondition) where
 
-import ConditionalRestriction.Internal.Parse.RestrictionParser (pConditionalRestriction, pCondition)
+import ConditionalRestriction.Internal.Parse.RestrictionParser (pCondition, pConditionalRestriction)

@@ -1,35 +1,53 @@
 {-# LANGUAGE TupleSections #-}
-{-|
-The ConditionalRestriction library offers functionality for parsing and
-evaluating of conditional restriction values
-(see [OSM Wiki](https://wiki.openstreetmap.org/wiki/Conditional_restrictions)).
 
-This module offers functions suitable for most basic use cases.
--}
+-- |
+-- The ConditionalRestriction library offers functionality for parsing and
+-- evaluating of conditional restriction values
+-- (see [OSM Wiki](https://wiki.openstreetmap.org/wiki/Conditional_restrictions)).
+--
+-- This module offers functions suitable for most basic use cases.
 module ConditionalRestriction
   ( needsData,
     evaluate,
     parseRestriction,
-    ID, Value(..), Type(..), Token,
-    Result(..),
-    ErrorMsg
+    ID,
+    Value (..),
+    Type (..),
+    Token,
+    Result (..),
+    ErrorMsg,
   )
 where
 
-import Data.Bifunctor (Bifunctor(first))
-import ConditionalRestriction.Result
-import ConditionalRestriction.Parse
-import ConditionalRestriction.Evaluate
-import ConditionalRestriction.Internal.Parse.ParserLib (parse, end)
-
+import ConditionalRestriction.Internal.Evaluate
+  ( ErrorMsg,
+    result,
+  )
+import ConditionalRestriction.Internal.Parse.ParserLib (end, parse)
+import ConditionalRestriction.Internal.Parse.RestrictionParser
+  ( pConditionalRestriction,
+  )
+import ConditionalRestriction.Parse.AST
+  ( ConditionalRestriction,
+    Token,
+  )
+import ConditionalRestriction.Parse.InputData
+  ( ID,
+    Type (..),
+    Value (..),
+  )
+import ConditionalRestriction.Parse.InputDataParser (pValue)
+import ConditionalRestriction.Result (Result (..))
+import Data.Bifunctor (Bifunctor (first))
 
 -- | Takes a conditional restriction string and returns the data needed in order to evaluate this string.
 -- If the conditional restriction couldn't be parsed,
 -- an error message is returned instead.
 needsData :: String -> Result ErrorMsg [(ID, Type)]
-needsData s = parseRestriction s >>= \r -> case result [] r of
-  Err (_, neededs) -> Ok neededs
-  Ok _ -> Ok []
+needsData s =
+  parseRestriction s >>= \r -> case result [] r of
+    Err (_, neededs) -> Ok neededs
+    Ok _ -> Ok []
 
 -- | Takes a conditional restriction string and some input data.
 -- It returns the value as a token if any restriction condition was met, or 'Nothing' otherwise.
@@ -44,4 +62,4 @@ evaluate s ds = do
 -- | Takes a conditional restriction string and returns the corresponding AST.
 -- Take a look at the "ConditionalRestriction.Parse.AST" module for AST manipulation.
 parseRestriction :: String -> Result ErrorMsg ConditionalRestriction
-parseRestriction = fmap fst . parse (pConditionalRestriction  <* end)
+parseRestriction = fmap fst . parse (pConditionalRestriction <* end)
