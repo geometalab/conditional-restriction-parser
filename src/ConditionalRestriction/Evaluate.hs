@@ -2,7 +2,7 @@
 {-|
 Functions to evaluate conditional restrictions.
 -}
-module ConditionalRestriction.Evaluate (result, fulfills, timeIn) where
+module ConditionalRestriction.Evaluate (ErrorMsg, result, fulfills, timeIn) where
 
 import Data.Hourglass
 import Data.List (nub)
@@ -10,7 +10,8 @@ import ConditionalRestriction.Parse.AST
 import ConditionalRestriction.Parse.InputData
 import ConditionalRestriction.Result
 
-type EvalError = Either String [(ID, Type)]
+-- | Plain text error message.
+type ErrorMsg = String
 
 -- | The 'result' function takes input data in the form of ('ID', 'Value') and a 'ConditionalRestriction' and returns
 -- the result of that 'ConditionalRestriction' when applied to the input data given. If data needed for the evaluation
@@ -18,7 +19,7 @@ type EvalError = Either String [(ID, Type)]
 --
 -- Note that this function will accept incomplete data if it is enough to evaluate the expression, but will always return
 -- a complete list of needed data types.
-result :: [(ID, Value)] -> ConditionalRestriction -> Result ([String], [(ID, Type)]) (Maybe Token) -- TODO combine needed data output
+result :: [(ID, Value)] -> ConditionalRestriction -> Result ([ErrorMsg], [(ID, Type)]) (Maybe Token) -- TODO combine needed data output
 result ds (ConditionalRestriction exprs) = find_r (\(Expression _ conds) -> all_r (fulfills ds) conds) (reverse exprs) >>= \case
   Nothing -> Ok Nothing
   Just (Expression tok _) -> Ok $ Just tok
@@ -45,7 +46,7 @@ result ds (ConditionalRestriction exprs) = find_r (\(Expression _ conds) -> all_
 -- | The 'fulfills' function takes input data in the form of ('ID', 'Value') and a 'Condition' and returns
 -- whether that condition is fulfilled. If some data is missing, it will return the missing data 'ID' and 'Type'
 -- and if the given data is of the wrong type, it will return an error message.
-fulfills :: [(ID, Value)] -> Condition -> Result (Either String (ID, Type)) Bool
+fulfills :: [(ID, Value)] -> Condition -> Result (Either ErrorMsg (ID, Type)) Bool
 fulfills ds (OH oh) = case lookup "time" ds of
   Just (VTime t) -> Ok $ timeIn t oh
   Just _ -> Err . Left $ "Incorrect input type for time"
