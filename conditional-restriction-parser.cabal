@@ -27,6 +27,7 @@ library
   exposed-modules:
       ConditionalRestriction
       ConditionalRestriction.Evaluate
+      ConditionalRestriction.Internal.Evaluate
       ConditionalRestriction.Internal.Parse.OpeningHoursParser
       ConditionalRestriction.Internal.Parse.ParserLib
       ConditionalRestriction.Internal.Parse.RestrictionParser

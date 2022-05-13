@@ -11,10 +11,7 @@ import ConditionalRestriction.Parse.OpeningHoursParser
 
 -- | Parse conditional restrictions, e.g. @"90 @ 18:00-22:00; 50 @ wet"@.
 pConditionalRestriction :: Parser String ConditionalRestriction
-pConditionalRestriction = pack <$> pExpression <*> optional (word ";" *> pExpression)
-  where
-    pack x (Just y) = ConditionalRestriction [x, y]
-    pack x Nothing = ConditionalRestriction  [x]
+pConditionalRestriction = ConditionalRestriction <$> ((:) <$> pExpression <*> many (word ";" *> pExpression))
 
 pExpression :: Parser String Expression
 pExpression = Expression <$> (strip <$> many (noneOf "@")) <*> (word "@" *> pMultipleConditions)

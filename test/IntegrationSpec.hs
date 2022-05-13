@@ -24,3 +24,8 @@ spec = do
   let term = "delivery @ (07:00-11:00); customers @ (07:00-17:00)" in describe term $ do
     it "returns 'customers' on (time = 2022-05-10 07:00)" $
       evaluate term [("time", "2022-05-10 07:00")] `shouldBe` Ok (Just "customers")
+    it "returns unknown on (time = 2022-05-10 06:00)" $
+      evaluate term [("time", "2022-05-10 06:00")] `shouldBe` Ok Nothing
+  let term = "foo @ (24/7); bar @ (Mo-Sa 10:00-12:00,13:00-20:00; Tu off); baz @ (Su-Tu 11:00-01:00, We-Th 11:00-03:00, Fr 11:00-06:00, Sa 11:00-07:00)" in describe term $ do
+    it "returns 'foo' on (time = 2022-05-10 10:00 (Tuesday))" $
+      evaluate term [("time", "2022-05-10 10:00")] `shouldBe` Ok (Just "foo")

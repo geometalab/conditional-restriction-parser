@@ -2,8 +2,8 @@
 module ConditionalRestriction.EvaluateSpec where
 import Test.Hspec (Spec, describe, it, shouldBe)
 import Test.QuickCheck (Testable(property))
-import Data.Hourglass (WeekDay(Monday, Thursday, Friday, Sunday), DateTime (DateTime), Month (May), Date (Date), TimeOfDay (TimeOfDay))
-import ConditionalRestriction.Evaluate
+import Data.Hourglass (WeekDay(Monday, Thursday, Friday, Sunday, Tuesday, Wednesday), DateTime (DateTime), Month (May), Date (Date), TimeOfDay (TimeOfDay))
+import ConditionalRestriction.Internal.Evaluate
 import ConditionalRestriction.Result
 import ConditionalRestriction.Parse.AST
 import ConditionalRestriction.Parse.InputData
@@ -35,6 +35,16 @@ spec = do
     it "returns true on 'weight > 2' with 'weight' = 3" $
       fulfills [("weight", VNum 3)] (Comparison "weight" Gt 2) `shouldBe` Ok True
   describe "timeIn" $ do
+    it "gets that 18:00 is within 24/7" $
+      let
+        time = DateTime (Date 2022 May 10) (TimeOfDay 18 00 00 00)
+        span = OpeningHours [RuleSequence Normal TwentyFourSeven (Just True)]
+      in timeIn time span `shouldBe` True
+    it "gets that 18:00 is not within 24/7 off" $
+      let
+        time = DateTime (Date 2022 May 10) (TimeOfDay 18 00 00 00)
+        span = OpeningHours [RuleSequence Normal TwentyFourSeven (Just False)]
+      in timeIn time span `shouldBe` False
     it "gets that 18:00 is within 11:00-20:00" $
       let
         time = DateTime (Date 2022 May 10) (TimeOfDay 18 00 00 00)
@@ -65,3 +75,26 @@ spec = do
         time = DateTime (Date 2022 May 14) (TimeOfDay 04 00 00 00) -- saturday
         span = OpeningHours [RuleSequence Normal (WeekdayTime [SingleDay Friday] [Span (TimeOfDay 11 00 0 0) (TimeOfDay 06 00 0 0)]) (Just True)]
       in timeIn time span `shouldBe` True
+    it "returns false on 'Mo-Fr; Tue off' for tuesday" $
+      let
+        time = DateTime (Date 2022 May 10) (TimeOfDay 18 00 00 00) -- tuesday
+        span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Monday Friday]) (Just True), RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False)]
+      in timeIn time span `shouldBe` False
+    it "returns true on 'Mo-Fr off; Tue' for tuesday" $
+      let
+        time = DateTime (Date 2022 May 10) (TimeOfDay 18 00 00 00) -- tuesday
+        span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Monday Friday]) (Just False), RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just True)]
+      in timeIn time span `shouldBe` True
+  describe "ohTimes" $ do
+    it "returns only Mo and Mi for 'Mo-We; Tue off'" $
+      let
+        min = TimeOfDay 00 00 00 0
+        max = TimeOfDay 23 59 59 999999999
+        span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Monday Wednesday]) (Just True), RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False)]
+      in ohTimes span `shouldBe` [[], [Span min max], [], [Span min max], [], [], []]
+    it "returns Mo, Tu, Mi for 'Tue off; Mo-We'" $
+      let
+        min = TimeOfDay 00 00 00 0
+        max = TimeOfDay 23 59 59 999999999
+        span = OpeningHours [RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False), RuleSequence Normal (WeekdaySel [WdayRange Monday Wednesday]) (Just True)]
+      in ohTimes span `shouldBe` [[], [Span min max], [Span min max], [Span min max], [], [], []]
