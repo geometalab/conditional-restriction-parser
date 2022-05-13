@@ -8,6 +8,7 @@ import ConditionalRestriction.Result
 import ConditionalRestriction.Parse.AST
 import ConditionalRestriction.Parse.InputData
 import Arbitrary.ConditionalRestriction.Parse.AST
+import ConditionalRestriction.Internal.Evaluate (subtractTimespan)
 
 spec :: Spec
 spec = do
@@ -98,3 +99,7 @@ spec = do
         max = TimeOfDay 23 59 59 999999999
         span = OpeningHours [RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False), RuleSequence Normal (WeekdaySel [WdayRange Monday Wednesday]) (Just True)]
       in ohTimes span `shouldBe` [[], [Span min max], [Span min max], [Span min max], [], [], []]
+  describe "addTimespan" $ do
+    it "is commutative" $ property $ \ts1 ts2 t -> timeInSelector t (addTimespan ts1 [ts2]) == timeInSelector t (addTimespan ts2 [ts1])
+  describe "subtractTimespan" $ do
+    it "is undone by addTimespan" $ property $ \ts1 ts2 t -> timeInSelector t (addTimespan ts1 (subtractTimespan ts1 [ts2])) == timeInSelector t (addTimespan ts1 [ts2])

@@ -110,17 +110,40 @@ timeExtendedInSelector t = any match_t
     match_t _ = False
 
 addTimespan :: TimeSpan -> TimeSelector -> TimeSelector
-addTimespan (Moment t) sel@(Moment t':ts) | t == t' = sel
-addTimespan (Moment t) (Moment t':ts) = Moment t' : addTimespan (Moment t) ts
-addTimespan (Moment t) sel@(Span t1 t2:ts) | t >= t1 && t <= t2 = sel
-addTimespan (Moment t) (Span t1 t2:ts) = Span t1 t2 : addTimespan (Moment t) ts
-addTimespan (Span t1 t2) (Moment t:ts) | t >= t1 && t <= t2 = Span t1 t2 : ts
-addTimespan (Span t1 t2) (Moment t:ts) = Moment t : addTimespan (Span t1 t2) ts
-addTimespan (Span ta1 ta2) (Span tb1 tb2:ts) = undefined
-addTimespan x [] = [x]
+addTimespan ts sel = add_timespan (explicitExtended ts) (map explicitExtended sel)
+ where
+  add_timespan (Moment t) sel@(Moment t':ts) | t == t' = sel
+  add_timespan (Moment t) (Moment t':ts) = Moment t' : add_timespan (Moment t) ts
+  add_timespan (Moment t) sel@(Span t1 t2:ts) | t >= t1 && t <= t2 = sel
+  add_timespan (Moment t) (Span t1 t2:ts) = Span t1 t2 : add_timespan (Moment t) ts
+  add_timespan (Span t1 t2) (Moment t:ts) | t >= t1 && t <= t2 = Span t1 t2 : ts
+  add_timespan (Span t1 t2) (Moment t:ts) = Moment t : add_timespan (Span t1 t2) ts
+  add_timespan (Span ta1 ta2) (Span tb1 tb2:ts) | ta1 <= tb1 && ta2 >= tb2 = Span ta1 ta2 : ts
+  add_timespan (Span ta1 ta2) (Span tb1 tb2:ts) | ta1 >= tb1 && ta2 <= tb2 = Span tb1 tb2 : ts
+  add_timespan (Span ta1 ta2) (Span tb1 tb2:ts) | ta1 <= tb1 && ta2 <= tb2 = Span ta1 tb2 : ts
+  add_timespan (Span ta1 ta2) (Span tb1 tb2:ts) | ta1 >= tb1 && ta2 >= tb2 = Span tb1 ta2 : ts
+  add_timespan (Span ta1 ta2) (Span tb1 tb2:ts) = Span tb1 tb2 : add_timespan (Span ta1 ta2) ts
+  add_timespan x [] = [x]
 
 subtractTimespan :: TimeSpan -> TimeSelector -> TimeSelector
-subtractTimespan = undefined
+subtractTimespan ts sel = subtract_timespan (explicitExtended ts) (map explicitExtended sel)
+ where
+  subtract_timespan (Moment t) sel@(Moment t':ts) | t == t' = ts
+  subtract_timespan (Moment t) (Moment t':ts) = Moment t' : subtract_timespan (Moment t) ts
+  subtract_timespan (Moment t) sel@(Span t1 t2:ts) | t >= t1 && t <= t2 = sel -- don't subtract single moments from time spans
+  subtract_timespan (Moment t) (Span t1 t2:ts) = Span t1 t2 : subtract_timespan (Moment t) ts
+  subtract_timespan (Span t1 t2) (Moment t:ts) | t >= t1 && t <= t2 = subtract_timespan (Span t1 t2) ts
+  subtract_timespan (Span t1 t2) (Moment t:ts) = Moment t : subtract_timespan (Span t1 t2) ts
+  subtract_timespan (Span ta1 ta2) (Span tb1 tb2:ts) | ta1 <= tb1 && ta2 >= tb2 = Span ta1 tb1 : Span tb2 ta2 : ts
+  subtract_timespan (Span ta1 ta2) (Span tb1 tb2:ts) | ta1 >= tb1 && ta2 <= tb2 = Span tb1 ta1 : Span ta2 tb2 : ts
+  subtract_timespan (Span ta1 ta2) (Span tb1 tb2:ts) | ta1 <= tb1 && ta2 <= tb2 = Span ta2 tb2 : subtract_timespan (Span ta1 ta2) ts
+  subtract_timespan (Span ta1 ta2) (Span tb1 tb2:ts) | ta1 >= tb1 && ta2 >= tb2 = Span tb1 ta1 : subtract_timespan (Span ta1 ta2) ts
+  subtract_timespan (Span ta1 ta2) (Span tb1 tb2:ts) = Span tb1 tb2 : subtract_timespan (Span ta1 ta2) ts
+  subtract_timespan x [] = []
+
+explicitExtended :: TimeSpan -> TimeSpan
+explicitExtended (Span t1 t2@(TimeOfDay h m s n)) | t1 >= t2 = Span t1 (TimeOfDay (h+24) m s n)
+explicitExtended other = other
 
 mapDays :: [WeekDay] -> (a -> a) -> [a] -> [a]
 mapDays days f = zipWith (\d x -> (if d `elem` days then f x else x)) (range Sunday Saturday)

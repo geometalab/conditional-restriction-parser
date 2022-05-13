@@ -29,6 +29,14 @@ spec = do
         Ok _ -> False
     describe "(<|>)" $ do
       it "Chooses second option if first is erroneous" $ property $ \i -> parse (empty <|> str "") i == parse (str "") i
+  describe "Monad (Parser i)" $ do
+    describe "return" $ do
+      it "behaves the same as pure" $ property $ \(x :: String) (i :: String) -> parse (pure x) i == parse (return x) i
+    describe "(>>=)" $ do
+      it "parses the same as with applicatives" $ property $ \(x :: String) i -> parse ((,) <$> str x <*> str x) i == parse (do
+        a <- str x
+        b <- str x
+        return (a,b)) i
   describe "str" $ do
     it "can parse any given string" $ property $ \(a, b) -> parse (str a) (a ++ b) == Ok (a, b)
   describe "anyOf" $ do
