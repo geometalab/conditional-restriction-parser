@@ -7,7 +7,7 @@ import Test.QuickCheck.Function -- cannot import Fn specifically
 import Control.Applicative (Alternative(empty, (<|>)))
 
 import ConditionalRestriction
-import ConditionalRestriction.Parse.ParserLib
+import ConditionalRestriction.Internal.Parse.ParserLib
 
 spec :: Spec
 spec = do

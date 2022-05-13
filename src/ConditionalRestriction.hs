@@ -11,7 +11,7 @@ import Data.Bifunctor (Bifunctor(first))
 import ConditionalRestriction.Result
 import ConditionalRestriction.Parse
 import ConditionalRestriction.Evaluate
-import ConditionalRestriction.Parse.ParserLib (end)
+import ConditionalRestriction.Internal.Parse.ParserLib (end)
 
 
 needsData :: String -> Result String [(ID, Type)]

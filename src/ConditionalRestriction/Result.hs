@@ -1,7 +1,11 @@
+{-|
+A simple result type. Similar to the 'Either' type, but tuned for results with an error type.
+-}
 module ConditionalRestriction.Result where
 
 import Data.Bifunctor (Bifunctor, bimap)
 
+-- | The 'Result' type consists of an error type @e@ and a success type @a@.
 data Result e a
   = Err e
   | Ok a
@@ -26,6 +30,7 @@ instance Monad (Result e) where
   (Ok x) >>= f = f x
   (Err x) >>= _ = Err x
 
+-- | 'Result' equivalent to 'Data.Maybe.fromMaybe'.
 fromResult :: a -> Result e a -> a
 fromResult _ (Ok x) = x
 fromResult x (Err _) = x

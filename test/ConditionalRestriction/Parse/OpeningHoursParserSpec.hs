@@ -6,7 +6,7 @@ import Data.Hourglass (WeekDay(Monday, Thursday, Saturday))
 import ConditionalRestriction
 import ConditionalRestriction.Parse
 import ConditionalRestriction.Parse.AST
-import ConditionalRestriction.Parse.OpeningHoursParser
+import ConditionalRestriction.Internal.Parse.OpeningHoursParser
 
 spec :: Spec
 spec = do

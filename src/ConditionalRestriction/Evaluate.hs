@@ -1,4 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
+{-|
+Functions to evaluate conditional restrictions.
+-}
 module ConditionalRestriction.Evaluate (result, fulfills, timeIn) where
 
 import Data.Hourglass

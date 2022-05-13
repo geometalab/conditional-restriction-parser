@@ -4,7 +4,7 @@ import Test.Hspec (Spec, describe, it, shouldBe)
 
 import ConditionalRestriction
 import ConditionalRestriction.Parse
-import ConditionalRestriction.Parse.RestrictionParser
+import ConditionalRestriction.Internal.Parse.RestrictionParser
 import ConditionalRestriction.Parse.AST
 
 spec :: Spec
