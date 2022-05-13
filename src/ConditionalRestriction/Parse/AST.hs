@@ -5,7 +5,7 @@ module ConditionalRestriction.Parse.AST where
 
 import Data.Hourglass (WeekDay, TimeOfDay)
 
--- | A single token.
+-- | A single token. Is used to represent values of any kind that the parser does not touch.
 type Token = String
 
 -- | AST representation of a conditional restriction.
