@@ -48,7 +48,7 @@ type ErrorMsg = String
 --
 -- Note that this function will accept incomplete data if it is enough to evaluate the expression, but will always return
 -- a complete list of needed data types.
-result :: [(ID, Value)] -> ConditionalRestriction -> Result ([ErrorMsg], [(ID, Type)]) (Maybe Token) -- TODO combine needed data output
+result :: [(ID, Value)] -> ConditionalRestriction -> Result ([ErrorMsg], [(ID, Type)]) (Maybe Token)
 result ds (ConditionalRestriction exprs) =
   find_r (\(Expression _ conds) -> all_r (fulfills ds) conds) (reverse exprs) >>= \case
     Nothing -> Ok Nothing

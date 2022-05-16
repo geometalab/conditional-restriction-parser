@@ -1,5 +1,9 @@
 -- | A simple result type. Similar to the 'Either' type, but tuned for results with an error type.
-module ConditionalRestriction.Result where
+module ConditionalRestriction.Result
+  ( Result (..),
+    fromResult,
+  )
+where
 
 import Data.Bifunctor (Bifunctor, bimap)
 

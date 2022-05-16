@@ -1,5 +1,21 @@
 -- | AST for conditional restrictions and incomplete AST for opening hours.
-module ConditionalRestriction.Parse.AST where
+module ConditionalRestriction.Parse.AST
+  ( Token,
+    ConditionalRestriction (..),
+    Expression (..),
+    Condition (..),
+    ComparisonOp (..),
+    OpeningHours (..),
+    OHState,
+    RuleType (..),
+    RuleSequence (..),
+    WeekdaySelector,
+    TimeSelector,
+    SelectorSequence (..),
+    WeekdayRange (..),
+    TimeSpan (..),
+  )
+where
 
 import Data.Hourglass (TimeOfDay, WeekDay)
 

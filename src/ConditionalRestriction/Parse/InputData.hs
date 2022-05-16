@@ -1,5 +1,10 @@
 -- | Input data types and values.
-module ConditionalRestriction.Parse.InputData where
+module ConditionalRestriction.Parse.InputData
+  ( ID,
+    Type (..),
+    Value (..),
+  )
+where
 
 import Data.Hourglass (DateTime)
 

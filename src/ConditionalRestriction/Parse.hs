@@ -1,5 +1,19 @@
 -- | This module reexports functions and types you are most likely to use from @ConditionalRestriction.Parse.*@.
-module ConditionalRestriction.Parse (Parser, parse, pConditionalRestriction, pCondition, pValue, pOpeningHours, ConditionalRestriction, Condition, ID, Value (..), Type (..), Token) where
+module ConditionalRestriction.Parse
+  ( Parser,
+    parse,
+    pConditionalRestriction,
+    pCondition,
+    pValue,
+    pOpeningHours,
+    ConditionalRestriction,
+    Condition,
+    ID,
+    Value (..),
+    Type (..),
+    Token,
+  )
+where
 
 import ConditionalRestriction.Internal.Parse.OpeningHoursParser
   ( pOpeningHours,

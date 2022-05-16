@@ -1,5 +1,11 @@
 -- | Parsers for input data values.
-module ConditionalRestriction.Parse.InputDataParser where
+module ConditionalRestriction.Parse.InputDataParser
+  ( pValue,
+    pBool,
+    pNum,
+    pTime,
+  )
+where
 
 import ConditionalRestriction.Internal.Parse.ParserLib
   ( Parser,
