@@ -80,7 +80,9 @@ fulfills :: [(ID, Value)] -> Condition -> Result (Either ErrorMsg (ID, Type)) Bo
 fulfills ds (OH oh) = case lookup "time" ds of
   Just (VTime t) -> Ok $ timeIn t oh
   Just _ -> Err . Left $ "Incorrect input type for time"
-  Nothing -> Err $ Right ("time", TTime)
+  Nothing -> case oh of
+    OpeningHours [RuleSequence _ TwentyFourSeven (Just o)] -> Ok o
+    _ -> Err $ Right ("time", TTime)
 fulfills ds (Comparison tok op val) = case lookup tok ds of
   Just (VNum d) -> Ok $ case op of
     Gt -> d > val

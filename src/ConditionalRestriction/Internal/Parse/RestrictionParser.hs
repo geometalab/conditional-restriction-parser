@@ -19,7 +19,7 @@ import ConditionalRestriction.Parse.AST
     ConditionalRestriction (..),
     Expression (..),
   )
-import Control.Applicative (Alternative (many, (<|>)))
+import Control.Applicative (Alternative (many, (<|>), some))
 import Data.Functor ()
 
 -- | Parse conditional restrictions, e.g. @"90 @ 18:00-22:00; 50 @ wet"@.
@@ -50,4 +50,4 @@ pCompOperator =
     <|> (Gt <$ word ">")
 
 pIdentifier :: Parser String String
-pIdentifier = many (anyOf $ ['a' .. 'z'] ++ ['_', '-']) <* ws
+pIdentifier = some (anyOf $ ['a' .. 'z'] ++ ['_', '-']) <* ws

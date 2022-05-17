@@ -1,3 +1,5 @@
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module ConditionalRestriction.Parse.ParserLibSpec where
@@ -19,7 +21,7 @@ import ConditionalRestriction.Internal.Parse.ParserLib
     ws,
   )
 import Control.Applicative (Alternative (empty, (<|>)))
-import Test.Hspec (Spec, describe, it, shouldBe)
+import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
 import Test.QuickCheck (property)
 import Test.QuickCheck.Function -- cannot import Fn directly
 
@@ -102,6 +104,10 @@ spec = do
     it "can parse any double" $
       property $ \(d :: Double) ->
         parse dbl (show d) == Ok (d, "")
+    it "throws an error on invalid value 'a'" $
+      parse dbl "a" `shouldSatisfy` \case
+        Err !_ -> True
+        _ -> False
   describe "bint" $ do
     it "can parse its max value" $ property $ \i -> let i' = abs i in parse (bint i') (show i') == Ok (i', "")
   describe "shorten" $ do

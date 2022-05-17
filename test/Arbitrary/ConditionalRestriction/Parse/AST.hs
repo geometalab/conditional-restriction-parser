@@ -5,9 +5,15 @@ import ConditionalRestriction.Parse.AST
     Condition (..),
     ConditionalRestriction (..),
     Expression (..),
+    OpeningHours (OpeningHours),
+    RuleSequence (RuleSequence),
+    RuleType (..),
+    SelectorSequence (..),
     TimeSpan (..),
+    WeekdayRange (..),
   )
-import Data.Hourglass (TimeOfDay (TimeOfDay))
+import Control.Applicative (Alternative (some))
+import Data.Hourglass (TimeOfDay (TimeOfDay), WeekDay (Saturday, Sunday))
 import Data.Maybe (maybeToList)
 import Test.QuickCheck
   ( Arbitrary (arbitrary),
@@ -25,13 +31,35 @@ instance Arbitrary Expression where
 instance Arbitrary Condition where
   arbitrary =
     oneof
-      [ pure $ OH undefined,
+      [ OH . OpeningHours <$> listOf arbitrary,
         Comparison <$> elements ["wheight", "length", "width", "height", "wheels"] <*> arbitrary <*> arbitrary,
         Absolute <$> elements ["wet", "snow"]
       ]
 
+instance Arbitrary RuleSequence where
+  arbitrary = RuleSequence <$> elements [Normal, Additional] <*> arbitrary <*> arbitrary
+
+instance Arbitrary SelectorSequence where
+  arbitrary =
+    oneof
+      [ pure TwentyFourSeven,
+        WeekdaySel <$> listOf arbitrary,
+        TimeSel <$> listOf arbitrary,
+        WeekdayTime <$> listOf arbitrary <*> listOf arbitrary
+      ]
+
 instance Arbitrary ComparisonOp where
   arbitrary = elements [Gt, Lt, GtEq, LtEq, Eq]
+
+instance Arbitrary WeekdayRange where
+  arbitrary =
+    oneof
+      [ SingleDay <$> arbitrary,
+        WdayRange <$> arbitrary <*> arbitrary
+      ]
+
+instance Arbitrary WeekDay where
+  arbitrary = elements (enumFromTo Sunday Saturday)
 
 instance Arbitrary TimeSpan where
   arbitrary =

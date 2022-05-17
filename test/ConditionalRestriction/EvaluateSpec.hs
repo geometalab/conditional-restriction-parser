@@ -11,7 +11,7 @@ import ConditionalRestriction.Parse.AST
     Expression (Expression),
     OpeningHours (OpeningHours),
     RuleSequence (RuleSequence),
-    RuleType (Normal),
+    RuleType (Additional, Normal),
     SelectorSequence (..),
     TimeSpan (Span),
     WeekdayRange (SingleDay, WdayRange),
@@ -82,23 +82,59 @@ spec = do
        in timeIn time span `shouldBe` True
     it "returns false on 'Mo-Fr; Tue off' for tuesday" $
       let time = DateTime (Date 2022 May 10) (TimeOfDay 18 00 00 00) -- tuesday
-          span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Monday Friday]) (Just True), RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False)]
+          span =
+            OpeningHours
+              [ RuleSequence Normal (WeekdaySel [WdayRange Monday Friday]) (Just True),
+                RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False)
+              ]
        in timeIn time span `shouldBe` False
     it "returns true on 'Mo-Fr off; Tue' for tuesday" $
       let time = DateTime (Date 2022 May 10) (TimeOfDay 18 00 00 00) -- tuesday
-          span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Monday Friday]) (Just False), RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just True)]
+          span =
+            OpeningHours
+              [ RuleSequence Normal (WeekdaySel [WdayRange Monday Friday]) (Just False),
+                RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just True)
+              ]
        in timeIn time span `shouldBe` True
   describe "ohTimes" $ do
     it "returns only Mo and Mi for 'Mo-We; Tue off'" $
       let min = TimeOfDay 00 00 00 0
           max = TimeOfDay 23 59 59 999999999
-          span = OpeningHours [RuleSequence Normal (WeekdaySel [WdayRange Monday Wednesday]) (Just True), RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False)]
+          span =
+            OpeningHours
+              [ RuleSequence Normal (WeekdaySel [WdayRange Monday Wednesday]) (Just True),
+                RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False)
+              ]
        in ohTimes span `shouldBe` [[], [Span min max], [], [Span min max], [], [], []]
     it "returns Mo, Tu, Mi for 'Tue off; Mo-We'" $
       let min = TimeOfDay 00 00 00 0
           max = TimeOfDay 23 59 59 999999999
-          span = OpeningHours [RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False), RuleSequence Normal (WeekdaySel [WdayRange Monday Wednesday]) (Just True)]
+          span =
+            OpeningHours
+              [ RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False),
+                RuleSequence Normal (WeekdaySel [WdayRange Monday Wednesday]) (Just True)
+              ]
        in ohTimes span `shouldBe` [[], [Span min max], [Span min max], [Span min max], [], [], []]
+    it "returns Tu for 'Tu off, Tu'" $
+      let min = TimeOfDay 00 00 00 0
+          max = TimeOfDay 23 59 59 999999999
+          span =
+            OpeningHours
+              [ RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just False),
+                RuleSequence Additional (WeekdaySel [SingleDay Tuesday]) (Just True)
+              ]
+       in ohTimes span `shouldBe` [[], [], [Span min max], [], [], [], []]
+    it "returns Tu 00:00-10:00, 11:00-23:59  for 'Tu, Tu 10:00-11:00 off'" $
+      let min = TimeOfDay 00 00 00 0
+          ten = TimeOfDay 10 00 00 0
+          eleven = TimeOfDay 11 00 00 0
+          max = TimeOfDay 23 59 59 999999999
+          span =
+            OpeningHours
+              [ RuleSequence Normal (WeekdaySel [SingleDay Tuesday]) (Just True),
+                RuleSequence Additional (WeekdayTime [SingleDay Tuesday] [Span ten eleven]) (Just False)
+              ]
+       in ohTimes span `shouldBe` [[], [], [Span min ten, Span eleven max], [], [], [], []]
   describe "addTimespan" $ do
     it "is commutative" $ property $ \ts1 ts2 t -> timeInSelector t (addTimespan ts1 [ts2]) == timeInSelector t (addTimespan ts2 [ts1])
   describe "subtractTimespan" $ do
