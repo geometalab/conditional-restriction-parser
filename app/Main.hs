@@ -23,11 +23,20 @@ programModes =
             values = def &= typ "KEY=VALUE" &= args
           }
           &= auto
-          &= help "Evaluate a conditional restriction based on data given in key=value format. To check the needed data use [data-needed].",
+          &= help "Evaluate a conditional restriction based on data given in key=value format."
+          &= details [ "Example usage: 'evaluate evaluate \"no @ (09:00-17:00 AND wet)\" time=\"2022-05-11 12:23\" wet=true'"
+                     , "To check the data needed to evaluate a restriction use 'data-needed'."
+                     , ""
+                     , "Values can be of types BOOL, NUM or TIME."
+                     , "Format of BOOL values: 'true'/'false'"
+                     , "Examples of NUM values: '3', '10.04'"
+                     , "Format of TIME values: 'YYYY-MM-DD hh:mm', e.g. '2022-05-10 22:15'"
+                     ],
         Parse
-          { restriction = def &= typ "PRESTRICTION" &= argPos 0
+          { restriction = def &= typ "PRESTRICTION" &= argPos 0 -- due to a bug in cmdargs, sadly the type has to be named differently than in evaluate: https://github.com/ndmitchell/cmdargs/issues/67
           }
-          &= help "Parse a conditional restriction and return its AST.",
+          &= help "Parse a conditional restriction and return its AST."
+          &= details [ "The AST is defined in the package ConditionalRestriction.Parse.AST." ],
         DataNeeded
           { restriction = def &= typ "DRESTRICTION" &= argPos 0
           }
