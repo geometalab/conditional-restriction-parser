@@ -8,6 +8,7 @@ module ConditionalRestriction.Parse
     pOpeningHours,
     ConditionalRestriction,
     Condition,
+    OpeningHours,
     ID,
     Value (..),
     Type (..),
@@ -26,7 +27,12 @@ import ConditionalRestriction.Internal.Parse.RestrictionParser
   ( pCondition,
     pConditionalRestriction,
   )
-import ConditionalRestriction.Parse.AST (Condition, ConditionalRestriction (ConditionalRestriction), Token)
+import ConditionalRestriction.Parse.AST
+  ( Condition,
+    ConditionalRestriction,
+    OpeningHours,
+    Token,
+  )
 import ConditionalRestriction.Parse.InputData
   ( ID,
     Type (..),
