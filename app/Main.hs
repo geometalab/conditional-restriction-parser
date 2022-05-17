@@ -67,7 +67,7 @@ main = cmdArgsRun programModes >>= \case
       putStrLn msg
       exitFailure
   DataNeeded r -> case needsData r of
-    Ok neededs -> mapM_ (putStrLn . (" - " ++) . showData) neededs
+    Ok neededs -> mapM_ (putStrLn . showData) neededs
     Err msg -> do
       putStrLn msg
       exitFailure
