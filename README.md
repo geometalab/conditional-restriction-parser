@@ -58,7 +58,7 @@ which will install the built application in a dedicated directory. The executabl
 
 If you want to develop new features or fix a bug, you'll need to set up a
 developement environment. First, follow the steps for [compiling the
-project](#user-content-compiling-the-project). Any IDE that supports Haskell
+project](#compiling-the-project). Any IDE that supports Haskell
 works, but this project has been developed with [Doom
 Emacs](https://github.com/doomemacs/doomemacs),
 [LSP](https://microsoft.github.io/language-server-protocol/)
@@ -78,3 +78,7 @@ in the project folder. If you want to check the test coverage, use
 stack test --coverage
 stack hpc report .
 ```
+
+The project uses [semantic versioning](https://semver.org/). Update the version
+number found in `package.yaml` accordingly if you plan on contributing and also
+update `ChangeLog.md`.
