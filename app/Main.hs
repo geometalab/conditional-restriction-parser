@@ -53,12 +53,12 @@ programModes =
               "Format of TIME values: 'YYYY-MM-DD hh:mm', e.g. '2022-05-10 22:15'"
             ],
         Parse
-          { restriction = def &= typ "RESTRICTION" &= argPos 0 -- due to a bug in cmdargs, sadly the type has to be named differently than in evaluate: https://github.com/ndmitchell/cmdargs/issues/67
+          { restriction = def &= typ "PRESTRICTION" &= argPos 0 -- due to a bug in cmdargs, sadly the type has to be named differently than in evaluate: https://github.com/ndmitchell/cmdargs/issues/67
           }
           &= help "Parse a conditional restriction and return its AST."
           &= details ["The AST is defined in the package ConditionalRestriction.Parse.AST."],
         DataNeeded
-          { restriction = def &= typ "RESTRICTION" &= argPos 0
+          { restriction = def &= typ "DRESTRICTION" &= argPos 0
           }
           &= name "data-needed"
           &= help "List the data needed to evaluate this conditional restriction."
