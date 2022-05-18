@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           conditional-restriction-parser
-version:        0.1.0.0
+version:        0.1.0
 description:    Please see the README on GitHub at <https://github.com/lbuchli/conditional-restriction-parser#readme>
 homepage:       https://github.com/lbuchli/conditional-restriction-parser#readme
 bug-reports:    https://github.com/lbuchli/conditional-restriction-parser/issues

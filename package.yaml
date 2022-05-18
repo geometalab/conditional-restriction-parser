@@ -1,5 +1,5 @@
 name:                conditional-restriction-parser
-version:             0.1.0.0
+version:             0.1.0
 github:              "lbuchli/conditional-restriction-parser"
 license:             AGPLv3
 author:              "Lukas Buchli"
