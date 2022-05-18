@@ -6,6 +6,25 @@ module Main where
 import ConditionalRestriction (ID, Result (Err, Ok), Type (TBool, TNum, TTime), evaluate, needsData, parseRestriction)
 import Control.Monad (unless, when)
 import System.Console.CmdArgs
+  ( CmdArgs,
+    Data,
+    Default (def),
+    Mode,
+    Typeable,
+    argPos,
+    args,
+    auto,
+    cmdArgsMode,
+    cmdArgsRun,
+    details,
+    help,
+    modes,
+    name,
+    program,
+    summary,
+    typ,
+    (&=),
+  )
 import System.Exit (exitFailure)
 
 data Program

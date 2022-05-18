@@ -1,5 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-
 module IntegrationSpec where
 
 import ConditionalRestriction

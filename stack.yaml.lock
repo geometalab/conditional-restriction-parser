@@ -3,18 +3,7 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    sha256: 9bcb8c364cb118cdab26a962600ad7beb0a5de47fea91845f0853d8d80f82906
-    name: cmdargs
-    filepath: /home/lukas/workspace/cmdargs/dist-newstyle/sdist/cmdargs-0.10.22.tar.gz
-    size: 65082
-    pantry-tree:
-      sha256: e005c1195a4bc0cdb7648b713f3d6246470835c644db813e8fee3ca5e308005f
-      size: 3122
-    version: 0.10.22
-  original:
-    filepath: /home/lukas/workspace/cmdargs/dist-newstyle/sdist/cmdargs-0.10.22.tar.gz
+packages: []
 snapshots:
 - completed:
     sha256: fb634b19f31da06684bb07ce02a20c75a3162138f279b388905b03ebd57bb50f

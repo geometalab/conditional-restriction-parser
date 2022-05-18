@@ -1,9 +1,10 @@
-{-# LANGUAGE LambdaCase  #-}
-{-# LANGUAGE BangPatterns  #-}
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE LambdaCase #-}
+
 module ConditionalRestrictionSpec where
 
 import ConditionalRestriction
-  ( Result (Ok, Err),
+  ( Result (Err, Ok),
     Type (TBool, TTime),
     evaluate,
     needsData,
