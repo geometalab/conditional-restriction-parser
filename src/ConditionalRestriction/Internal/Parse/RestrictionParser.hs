@@ -22,7 +22,7 @@ import ConditionalRestriction.Parse.AST
 import Control.Applicative (Alternative (many, some, (<|>)))
 import Data.Functor ()
 
--- | Parse conditional restrictions, e.g. @"90 @ 18:00-22:00; 50 @ wet"@.
+-- | Parse conditional restrictions, e.g. @"90 \@ 18:00-22:00; 50 \@ wet"@.
 pConditionalRestriction :: Parser String ConditionalRestriction
 pConditionalRestriction = ConditionalRestriction <$> ((:) <$> pExpression <*> many (word ";" *> pExpression))
 
