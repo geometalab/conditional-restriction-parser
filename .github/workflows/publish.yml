@@ -1,0 +1,32 @@
+on: 
+  push:
+    tags:
+      - v1.*
+name: publish
+jobs: 
+  publish-lib-hackage:
+    name: Publish Library on Hackage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Library
+        run: stack build
+      - name: Publish Library on Hackage
+        env:
+          HACKAGE_KEY: ${{ secrets.HACKAGE_KEY }}
+        run: stack upload --candidate .
+    
+  build-exe-linux:
+    name: Build Linux Executable
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Executable
+        run: |
+          mkdir build
+          stack install --local-bin-path build/
+      - name: Publish Executable
+        uses: actions/upload-artifact@v3
+        with:
+          name: conditional-restriction-parser
+          path: build/conditional-restriction-parser-exe
