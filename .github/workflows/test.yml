@@ -1,0 +1,11 @@
+on: [push]
+name: build
+jobs:
+  runtests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Tests
+        run: stack test
+
