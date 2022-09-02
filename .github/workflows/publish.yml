@@ -1,6 +1,7 @@
 on: 
   push:
     tags:
+      - v0.*
       - v1.*
 name: publish
 jobs: 
