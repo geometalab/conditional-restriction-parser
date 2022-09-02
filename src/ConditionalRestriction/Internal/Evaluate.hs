@@ -149,10 +149,8 @@ addTimespan ts sel = add_timespan (explicitExtended ts) (map explicitExtended se
     add_timespan (Moment t) (Span t1 t2 : ts) = Span t1 t2 : add_timespan (Moment t) ts
     add_timespan (Span t1 t2) (Moment t : ts) | t >= t1 && t <= t2 = Span t1 t2 : ts
     add_timespan (Span t1 t2) (Moment t : ts) = Moment t : add_timespan (Span t1 t2) ts
-    add_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 <= tb1 && ta2 >= tb2 = Span ta1 ta2 : ts
-    add_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 >= tb1 && ta2 <= tb2 = Span tb1 tb2 : ts
-    add_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 <= tb1 && ta2 <= tb2 = Span ta1 tb2 : ts
-    add_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 >= tb1 && ta2 >= tb2 = Span tb1 ta2 : ts
+    add_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | (tb1 <= ta2 && tb2 > ta1) || (ta1 <= tb2 && ta2 > tb1) = -- where overlaps
+                                                      Span (min ta1 tb1) (max ta2 tb2) : ts
     add_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) = Span tb1 tb2 : add_timespan (Span ta1 ta2) ts
     add_timespan x [] = [x]
 
@@ -165,10 +163,11 @@ subtractTimespan ts sel = subtract_timespan (explicitExtended ts) (map explicitE
     subtract_timespan (Moment t) (Span t1 t2 : ts) = Span t1 t2 : subtract_timespan (Moment t) ts
     subtract_timespan (Span t1 t2) (Moment t : ts) | t >= t1 && t <= t2 = subtract_timespan (Span t1 t2) ts
     subtract_timespan (Span t1 t2) (Moment t : ts) = Moment t : subtract_timespan (Span t1 t2) ts
-    subtract_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 <= tb1 && ta2 >= tb2 = Span ta1 tb1 : Span tb2 ta2 : ts
-    subtract_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 >= tb1 && ta2 <= tb2 = Span tb1 ta1 : Span ta2 tb2 : ts
-    subtract_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 <= tb1 && ta2 <= tb2 = Span ta2 tb2 : subtract_timespan (Span ta1 ta2) ts
-    subtract_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 >= tb1 && ta2 >= tb2 = Span tb1 ta1 : subtract_timespan (Span ta1 ta2) ts
+    subtract_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | (tb1 < ta2 && tb2 > ta1) || (ta1 < tb2 && ta2 > tb1) =
+                                                           Span (min ta1 tb1) (max ta1 tb1) : Span (min ta2 tb2) (max ta2 tb2) : ts
+    subtract_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 == tb1 && ta2 == tb2 = ts
+    subtract_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta1 == tb1 = Span (min ta2 tb2) (max ta2 tb2) : ts
+    subtract_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) | ta2 == tb2 = Span (min ta1 tb1) (max ta1 tb1) : ts
     subtract_timespan (Span ta1 ta2) (Span tb1 tb2 : ts) = Span tb1 tb2 : subtract_timespan (Span ta1 ta2) ts
     subtract_timespan x [] = []
 

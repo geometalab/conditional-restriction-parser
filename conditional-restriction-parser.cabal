@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.5.
+-- This file has been generated from package.yaml by hpack version 0.34.7.
 --
 -- see: https://github.com/sol/hpack
 
@@ -12,8 +12,7 @@ bug-reports:    https://github.com/lbuchli/conditional-restriction-parser/issues
 author:         Lukas Buchli
 maintainer:     lukas.buchli@ost.ch
 copyright:      2022 Lukas Buchli
-license:        BSD3
-license-file:   LICENSE
+license:        AGPLv3
 build-type:     Simple
 extra-source-files:
     README.md
