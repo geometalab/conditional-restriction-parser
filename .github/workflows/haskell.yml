@@ -3,7 +3,24 @@ name: build
 jobs:
   runtests:
     name: Run Tests
-    runs-on: ubuntu-latest # or macOS-latest, or windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: stack test
+      - name: Run Tests
+        run: stack test
+      
+  publish-exe:
+      name: Publish Executable
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Build Executable
+          run: |
+            mkdir build
+            stack install --local-bin-path build/
+        - name: Publish Executable
+          uses: actions/upload-artifact@v3
+          with:
+            name: conditional-restriction-parser-exe
+            path: build/conditional-restriction-parser-exe
+        
