@@ -9,6 +9,7 @@ jobs:
     name: Publish Library on Hackage
     runs-on: ubuntu-latest
     needs: runtests
+    environment: Publish
     steps:
       - uses: actions/checkout@v3
       - name: Publish Library on Hackage
