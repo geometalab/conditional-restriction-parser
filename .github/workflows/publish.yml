@@ -8,10 +8,9 @@ jobs:
   publish-lib-hackage:
     name: Publish Library on Hackage
     runs-on: ubuntu-latest
+    needs: runtests
     steps:
       - uses: actions/checkout@v3
-      - name: Build Library
-        run: stack build
       - name: Publish Library on Hackage
         env:
           HACKAGE_KEY: ${{ secrets.HACKAGE_KEY }}
