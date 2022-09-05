@@ -78,7 +78,3 @@ in the project folder. If you want to check the test coverage, use
 stack test --coverage
 stack hpc report .
 ```
-
-The project uses [semantic versioning](https://semver.org/). Update the version
-number found in `package.yaml` accordingly if you plan on contributing and also
-update `ChangeLog.md`.
