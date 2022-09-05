@@ -1,10 +1,12 @@
 name:                conditional-restriction-parser
-version:             0.1.0
+version:             0.1.0.0
 github:              "lbuchli/conditional-restriction-parser"
 license:             AGPLv3
 author:              "Lukas Buchli"
 maintainer:          "lukas.buchli@ost.ch"
 copyright:           "2022 Lukas Buchli"
+synopsis:            "Parser and interpreter of OpenStreetMap conditional restriction values"
+category:            "Library Utils Parser"
 
 extra-source-files:
 - README.md
