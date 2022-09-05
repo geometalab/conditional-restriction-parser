@@ -1,6 +1,6 @@
 name:                conditional-restriction-parser
-version:             0.1.0.1
-github:              "lbuchli/conditional-restriction-parser"
+version:             0.1.0.2
+github:              "geometalab/conditional-restriction-parser"
 license:             AGPL-3
 license-file:        LICENSE.md
 author:              "Lukas Buchli"
@@ -20,7 +20,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/lbuchli/conditional-restriction-parser#readme>
+description:         Please see the README on GitHub at <https://github.com/geometalab/conditional-restriction-parser#readme>
 
 dependencies:
 - base >= 4.7 && < 5
