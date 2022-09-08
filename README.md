@@ -78,3 +78,7 @@ in the project folder. If you want to check the test coverage, use
 stack test --coverage
 stack hpc report .
 ```
+
+## License 
+
+This project is licensed under AGPL version 3 (only).
