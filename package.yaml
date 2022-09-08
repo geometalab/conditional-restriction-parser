@@ -1,11 +1,11 @@
 name:                conditional-restriction-parser
-version:             0.1.0.4
+version:             0.1.0.5
 github:              geometalab/conditional-restriction-parser
 license:             AGPL-3
 license-file:        LICENSE.md
 author:              Lukas Buchli
 maintainer:          lukas.buchli@ost.ch
-copyright:           2022 Lukas Buchli
+copyright:           2022 IFS Institute for Software, Eastern Switzerland University of Applied Sciences (OST)
 synopsis:            Parser and interpreter of OpenStreetMap conditional restriction values
 category:            Parser
 description:         Please see the README on GitHub at <https://github.com/geometalab/conditional-restriction-parser#readme>

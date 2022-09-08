@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           conditional-restriction-parser
-version:        0.1.0.4
+version:        0.1.0.5
 synopsis:       Parser and interpreter of OpenStreetMap conditional restriction values
 description:    Please see the README on GitHub at <https://github.com/geometalab/conditional-restriction-parser#readme>
 category:       Parser
@@ -13,7 +13,7 @@ homepage:       https://github.com/geometalab/conditional-restriction-parser#rea
 bug-reports:    https://github.com/geometalab/conditional-restriction-parser/issues
 author:         Lukas Buchli
 maintainer:     lukas.buchli@ost.ch
-copyright:      2022 Lukas Buchli
+copyright:      2022 IFS Institute for Software, Eastern Switzerland University of Applied Sciences (OST)
 license:        AGPL-3
 license-file:   LICENSE.md
 build-type:     Simple
