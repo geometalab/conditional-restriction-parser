@@ -5,6 +5,8 @@ module Main where
 
 import ConditionalRestriction (ID, Result (Err, Ok), Type (TBool, TNum, TTime), evaluate, needsData, parseRestriction)
 import Control.Monad (unless, when)
+import Data.Version (showVersion)
+import Paths_conditional_restriction_parser (version)
 import System.Console.CmdArgs
   ( CmdArgs,
     Data,
@@ -64,7 +66,7 @@ programModes =
           &= help "List the data needed to evaluate this conditional restriction."
       ]
       &= program "conditional-restriction-parser-exe"
-      &= summary "Conditional Restriction Parser v0.1.0.0, (C) Lukas Buchli 2022"
+      &= summary ("Conditional Restriction Parser " ++ showVersion version ++ ", (C) Lukas Buchli 2022")
 
 main :: IO ()
 main =
