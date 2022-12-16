@@ -1,6 +1,6 @@
 # Conditional Restriction Parser
 
-This project includes a library that can be used to handle [OSM Conditional Restrictions](https://wiki.openstreetmap.org/wiki/Conditional_restrictions)
+This project includes a library that can be used to handle [OpenStreetMap (OSM) Conditional Restrictions](https://wiki.openstreetmap.org/wiki/Conditional_restrictions)
 as well as a console-based application
 that can be used for simple parsing and evaluation of conditional restrictions.
 
